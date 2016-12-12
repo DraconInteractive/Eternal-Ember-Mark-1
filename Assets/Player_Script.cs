@@ -11,8 +11,12 @@ public class Player_Script : MonoBehaviour {
 	public genderType playerGender;
 	public GameObject maleModel, femaleModel;
 
+	public enum classType {Warrior, Rogue};
+	public classType playerClass;
+
 	public Slider healthSlider, manaSlider;
 	public float currentHealth, maxHealth, currentMana, maxMana;
+
 	//Movement
 	public float playerRunSpeed, playerTurnSpeed;
 	public Animator maleAnim, femaleAnim;
@@ -23,9 +27,11 @@ public class Player_Script : MonoBehaviour {
 	}
 	// Use this for initialization
 	void Start () {
-		SetGender (genderType.Male);
 		currentHealth = maxHealth;
 		currentMana = maxMana;
+		SetGender (genderType.Male);
+		SetClass (classType.Warrior);
+
 	}
 	
 	// Update is called once per frame
@@ -65,11 +71,12 @@ public class Player_Script : MonoBehaviour {
 	#region data retainment
 	public void SaveGame () {
 		PlayerPrefs.SetString ("PlayerGender", playerGender.ToString ());
+		PlayerPrefs.SetString ("PlayerClass", playerClass.ToString ());
 	}
 
 	public void LoadGame () {
 		string g = PlayerPrefs.GetString ("PlayerGender");
-		print (g);
+//		print (g);
 		if (g == "Male") {
 			if (playerGender.ToString () != g) {
 				SetGender (genderType.Male);
@@ -81,6 +88,16 @@ public class Player_Script : MonoBehaviour {
 		} else {
 			print ("Unknown Gender");
 		}
+
+		string c = PlayerPrefs.GetString ("PlayerClass");
+//		print (c);
+		if (c == "Rogue") {
+			playerClass = classType.Rogue;
+		} else if (c == "Warrior") {
+			playerClass = classType.Warrior;
+		} else {
+			print ("Unknown Class");
+		}
 	}
 
 	#endregion
@@ -88,12 +105,15 @@ public class Player_Script : MonoBehaviour {
 	#region player statstics
 
 	public void DamagePlayer (int amount) {
-		
+		currentHealth -= amount;
+		healthSlider.value = currentHealth;
 	}
 
 	public void HealPlayer (int amount) {
-		
+		currentHealth += amount;
+		healthSlider.value = currentHealth;
 	}
+
 	public void SetGender (genderType gender) {
 		switch (gender)
 		{
@@ -110,6 +130,16 @@ public class Player_Script : MonoBehaviour {
 		}
 
 		playerGender = gender;
+	}
+
+	public void SetClass (classType c) {
+		switch (c) 
+		{
+		case classType.Rogue:
+			break;
+		case classType.Warrior:
+			break;
+		}
 	}
 
 	#endregion

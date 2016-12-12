@@ -42,6 +42,18 @@ public class ConsoleCommand : MonoBehaviour {
 		case "SetGender_Female":
 			player.SetGender (Player_Script.genderType.Female);
 			break;
+		case "SetClass_Rogue":
+			player.SetClass (Player_Script.classType.Rogue);
+			break;
+		case "SetClass_Warrior":
+			player.SetClass (Player_Script.classType.Warrior);
+			break;
+		case "Damage_Player_20":
+			player.DamagePlayer (20);
+			break;
+		case "Heal_Player_20":
+			player.HealPlayer (20);
+			break;
 		}
 		ToggleCC (false);
 	}
