@@ -129,7 +129,8 @@ public class UniqueShadow : MonoBehaviour {
 			var mr = gameObject.AddComponent<MeshRenderer>();
 			mr.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
 			mr.reflectionProbeUsage = UnityEngine.Rendering.ReflectionProbeUsage.Off;
-			mr.useLightProbes = false;
+//			mr.useLightProbes = false;
+			mr.lightProbeUsage = UnityEngine.Rendering.LightProbeUsage.Off;
 		}
 	}
 

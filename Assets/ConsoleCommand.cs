@@ -4,9 +4,11 @@ using System.Collections;
 
 public class ConsoleCommand : MonoBehaviour {
 	public InputField commandConsole;
+	private Player_Script player;
 	// Use this for initialization
 	void Start () {
 		ToggleCC (false);
+		player = Player_Script.player;
 	}
 	
 	// Update is called once per frame
@@ -26,6 +28,11 @@ public class ConsoleCommand : MonoBehaviour {
 		case "Test":
 			print ("Command Accepted");
 			break;
+		case "SaveGame":
+			player.SaveGame ();
+			break;
+		case "LoadGame":
+			player.LoadGame ();
 		}
 		ToggleCC (false);
 	}
