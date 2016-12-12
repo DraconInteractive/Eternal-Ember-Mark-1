@@ -4,15 +4,15 @@ using System.Collections;
 public class Player_Script : MonoBehaviour {
 	public static Player_Script player;
 
-	public AdvancedSaveSystem_SaveGO goSaver;
-	public AdvancedSaveSystem_LoadGO goLoader;
-
+	public enum genderType {Male, Female};
+	public genderType playerGender;
+	public GameObject maleModel, femaleModel;
 	void Awake () {
 		player = GetComponent<Player_Script> ();
 	}
 	// Use this for initialization
 	void Start () {
-	
+		SetGender (genderType.Male);
 	}
 	
 	// Update is called once per frame
@@ -21,10 +21,38 @@ public class Player_Script : MonoBehaviour {
 	}
 
 	public void SaveGame () {
-		goSaver.SaveGameObjects (1);
+		PlayerPrefs.SetString ("PlayerGender", playerGender.ToString ());
 	}
 
 	public void LoadGame () {
-		goLoader.LoadGameObjects (1);
+		string g = PlayerPrefs.GetString ("PlayerGender");
+		print (g);
+		if (g == "Male") {
+			if (playerGender.ToString () != g) {
+				SetGender (genderType.Male);
+			}
+		} else if (g == "Female") {
+			if (playerGender.ToString () != g) {
+				SetGender (genderType.Female);
+			}
+		} else {
+			print ("Unknown Gender");
+		}
+	}
+
+	public void SetGender (genderType gender) {
+		switch (gender)
+		{
+		case genderType.Male:
+			maleModel.SetActive (true);
+			femaleModel.SetActive (false);
+			break;
+		case genderType.Female:
+			femaleModel.SetActive (true);
+			maleModel.SetActive (false);
+			break;
+		}
+
+		playerGender = gender;
 	}
 }

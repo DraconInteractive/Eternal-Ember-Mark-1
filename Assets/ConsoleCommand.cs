@@ -30,9 +30,18 @@ public class ConsoleCommand : MonoBehaviour {
 			break;
 		case "SaveGame":
 			player.SaveGame ();
+			print ("Player Saved");
 			break;
 		case "LoadGame":
 			player.LoadGame ();
+			print ("Player Loaded");
+			break;
+		case "SetGender_Male":
+			player.SetGender (Player_Script.genderType.Male);
+			break;
+		case "SetGender_Female":
+			player.SetGender (Player_Script.genderType.Female);
+			break;
 		}
 		ToggleCC (false);
 	}
