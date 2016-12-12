@@ -1,25 +1,68 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 using System.Collections;
 
 public class Player_Script : MonoBehaviour {
 	public static Player_Script player;
+	private Rigidbody rb;
 
+	//Stats
 	public enum genderType {Male, Female};
 	public genderType playerGender;
 	public GameObject maleModel, femaleModel;
+
+	public Slider healthSlider, manaSlider;
+	public float currentHealth, maxHealth, currentMana, maxMana;
+	//Movement
+	public float playerRunSpeed, playerTurnSpeed;
+	public Animator maleAnim, femaleAnim;
+	private Animator playerAnim;
 	void Awake () {
 		player = GetComponent<Player_Script> ();
+		rb = GetComponent<Rigidbody> ();
 	}
 	// Use this for initialization
 	void Start () {
 		SetGender (genderType.Male);
+		currentHealth = maxHealth;
+		currentMana = maxMana;
 	}
 	
 	// Update is called once per frame
 	void Update () {
-	
+		PlayerMovement ();
+		UpdateAnimation ();
 	}
 
+	#region Movement
+	private void PlayerMovement () {
+		float prs;
+		if (Input.GetAxis("Vertical") >= 0) {
+			prs = playerRunSpeed;
+		} else {
+			prs = playerRunSpeed / 2;
+		}
+		rb.MovePosition (transform.position + transform.forward * Input.GetAxis ("Vertical") * prs * Time.deltaTime);
+
+		transform.Rotate (transform.up, Input.GetAxis("Horizontal") * playerTurnSpeed * Time.deltaTime);
+	}
+
+	private void UpdateAnimation () {
+		if (playerAnim == null) {
+			if (playerGender == genderType.Male) {
+				playerAnim = maleAnim;
+			} else if (playerGender == genderType.Female) {
+				playerAnim = femaleAnim;
+			} else {
+				Debug.Log ("No Animation Gender Assignable");
+			}
+		}
+
+		playerAnim.SetFloat ("Speed", Input.GetAxis ("Vertical"));
+	}
+	#endregion
+
+	#region data retainment
 	public void SaveGame () {
 		PlayerPrefs.SetString ("PlayerGender", playerGender.ToString ());
 	}
@@ -40,19 +83,34 @@ public class Player_Script : MonoBehaviour {
 		}
 	}
 
+	#endregion
+
+	#region player statstics
+
+	public void DamagePlayer (int amount) {
+		
+	}
+
+	public void HealPlayer (int amount) {
+		
+	}
 	public void SetGender (genderType gender) {
 		switch (gender)
 		{
 		case genderType.Male:
 			maleModel.SetActive (true);
 			femaleModel.SetActive (false);
+			playerAnim = maleAnim;
 			break;
 		case genderType.Female:
 			femaleModel.SetActive (true);
 			maleModel.SetActive (false);
+			playerAnim = femaleAnim;
 			break;
 		}
 
 		playerGender = gender;
 	}
+
+	#endregion
 }
