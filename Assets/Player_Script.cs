@@ -1,9 +1,13 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 using System.Collections;
+using System.Collections.Generic;
+using MORPH3D;
 
 public class Player_Script : MonoBehaviour {
 	public static Player_Script player;
+	private M3DCharacterManager maleM3DManager, femaleM3DManager;
 	private Rigidbody rb;
 
 	//Stats
@@ -14,6 +18,7 @@ public class Player_Script : MonoBehaviour {
 	public enum classType {Warrior, Rogue};
 	public classType playerClass;
 
+	public List<MORPH3D.COSTUMING.CIclothing> warriorClothing;
 	public Slider healthSlider, manaSlider;
 	public float currentHealth, maxHealth, currentMana, maxMana;
 
@@ -24,6 +29,8 @@ public class Player_Script : MonoBehaviour {
 	void Awake () {
 		player = GetComponent<Player_Script> ();
 		rb = GetComponent<Rigidbody> ();
+		maleM3DManager = maleModel.GetComponent<M3DCharacterManager> ();
+		femaleM3DManager = femaleModel.GetComponent<M3DCharacterManager> ();
 	}
 	// Use this for initialization
 	void Start () {
