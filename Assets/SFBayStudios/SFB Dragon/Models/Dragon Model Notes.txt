@@ -1,0 +1,5 @@
+NOTES ON DRAGON MODELS
+
+October 9th, 2016
+
+The latest version of the animations are on the Dragon Rider v2 model.  The animations will work on the Dragon Master model, but ultimately they’re the same model.  The Dragon Rider only has a placeholder for the human bodies, and bones to work with those.
