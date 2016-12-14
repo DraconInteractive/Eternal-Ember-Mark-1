@@ -22,6 +22,8 @@ public class Player_Script : MonoBehaviour {
 	public Slider healthSlider, manaSlider;
 	public float currentHealth, maxHealth, currentMana, maxMana;
 
+	public GameObject maleHair;
+
 	//Movement
 	public float playerRunSpeed, playerTurnSpeed;
 	public Animator maleAnim, femaleAnim;
@@ -147,6 +149,27 @@ public class Player_Script : MonoBehaviour {
 		case classType.Warrior:
 			break;
 		}
+	}
+
+	public void EnablePlayerHair () {
+//		ContentPack hairPack = new ContentPack ();
+//		hairPack.setupWithGameObject (maleHair);
+//		for (int i = 0; i < hairPack.availableHair.Length; i++) {
+//			maleM3DManager.AttachCIHair(hairPack.availableHair[i], true);
+//		}
+		maleM3DManager.DetectAttachedHair ();
+	}
+
+	public void DisablePlayerHair () {
+		
+	}
+	public void EnableClothingSet () {
+		maleM3DManager.SetClothingVisibility ("Undersuit", true);
+		maleM3DManager.SetClothingVisibility ("valWolfBreastplate", true);
+	}
+
+	public void DisableClothingSet () {
+		
 	}
 
 	#endregion

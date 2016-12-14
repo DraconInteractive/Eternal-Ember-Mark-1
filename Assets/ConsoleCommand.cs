@@ -54,6 +54,15 @@ public class ConsoleCommand : MonoBehaviour {
 		case "Heal_Player_20":
 			player.HealPlayer (20);
 			break;
+		case "ClothePlayer":
+			player.EnableClothingSet ();
+			break;
+		case "ActivatePlayerHair":
+			player.EnablePlayerHair ();
+			break;
+		case "DisablePlayerHair":
+			player.DisablePlayerHair ();
+			break;
 		}
 		ToggleCC (false);
 	}
