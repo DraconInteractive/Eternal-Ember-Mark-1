@@ -151,26 +151,7 @@ public class Player_Script : MonoBehaviour {
 		}
 	}
 
-	public void EnablePlayerHair () {
-//		ContentPack hairPack = new ContentPack ();
-//		hairPack.setupWithGameObject (maleHair);
-//		for (int i = 0; i < hairPack.availableHair.Length; i++) {
-//			maleM3DManager.AttachCIHair(hairPack.availableHair[i], true);
-//		}
-		maleM3DManager.DetectAttachedHair ();
-	}
 
-	public void DisablePlayerHair () {
-		
-	}
-	public void EnableClothingSet () {
-		maleM3DManager.SetClothingVisibility ("Undersuit", true);
-		maleM3DManager.SetClothingVisibility ("valWolfBreastplate", true);
-	}
-
-	public void DisableClothingSet () {
-		
-	}
 
 	#endregion
 }

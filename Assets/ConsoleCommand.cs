@@ -23,8 +23,7 @@ public class ConsoleCommand : MonoBehaviour {
 	}
 
 	public void EnterCommand (string command) {
-		switch (command)
-		{
+		switch (command) {
 		case "Test":
 			print ("Command Accepted");
 			break;
@@ -53,15 +52,6 @@ public class ConsoleCommand : MonoBehaviour {
 			break;
 		case "Heal_Player_20":
 			player.HealPlayer (20);
-			break;
-		case "ClothePlayer":
-			player.EnableClothingSet ();
-			break;
-		case "ActivatePlayerHair":
-			player.EnablePlayerHair ();
-			break;
-		case "DisablePlayerHair":
-			player.DisablePlayerHair ();
 			break;
 		}
 		ToggleCC (false);
