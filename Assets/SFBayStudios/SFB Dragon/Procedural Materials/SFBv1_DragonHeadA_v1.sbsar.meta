@@ -2117,127 +2117,104 @@ SubstanceImporter:
     materialProperties:
       serializedVersion: 2
       texEnvs:
-        data:
-          first:
-            name: _MainTex
-          second:
-            texture: {instanceID: 0}
-            scale: {x: 1, y: 1}
-            offset: {x: 0, y: 0}
-        data:
-          first:
-            name: _BumpMap
-          second:
-            texture: {instanceID: 0}
-            scale: {x: 1, y: 1}
-            offset: {x: 0, y: 0}
-        data:
-          first:
-            name: _DetailNormalMap
-          second:
-            texture: {instanceID: 0}
-            scale: {x: 1, y: 1}
-            offset: {x: 0, y: 0}
-        data:
-          first:
-            name: _ParallaxMap
-          second:
-            texture: {instanceID: 0}
-            scale: {x: 1, y: 1}
-            offset: {x: 0, y: 0}
-        data:
-          first:
-            name: _OcclusionMap
-          second:
-            texture: {instanceID: 0}
-            scale: {x: 1, y: 1}
-            offset: {x: 0, y: 0}
-        data:
-          first:
-            name: _EmissionMap
-          second:
-            texture: {instanceID: 0}
-            scale: {x: 1, y: 1}
-            offset: {x: 0, y: 0}
-        data:
-          first:
-            name: _DetailMask
-          second:
-            texture: {instanceID: 0}
-            scale: {x: 1, y: 1}
-            offset: {x: 0, y: 0}
-        data:
-          first:
-            name: _DetailAlbedoMap
-          second:
-            texture: {instanceID: 0}
-            scale: {x: 1, y: 1}
-            offset: {x: 0, y: 0}
-        data:
-          first:
-            name: _MetallicGlossMap
-          second:
-            texture: {instanceID: 0}
-            scale: {x: 1, y: 1}
-            offset: {x: 0, y: 0}
+      - first:
+          name: _BumpMap
+        second:
+          texture: {fileID: -1790986850, guid: 953f90f83ae7d4f9c8fc8fb77e2cfc0e, type: 3}
+          scale: {x: 1, y: 1}
+          offset: {x: 0, y: 0}
+      - first:
+          name: _DetailAlbedoMap
+        second:
+          texture: {instanceID: 0}
+          scale: {x: 1, y: 1}
+          offset: {x: 0, y: 0}
+      - first:
+          name: _DetailMask
+        second:
+          texture: {instanceID: 0}
+          scale: {x: 1, y: 1}
+          offset: {x: 0, y: 0}
+      - first:
+          name: _DetailNormalMap
+        second:
+          texture: {instanceID: 0}
+          scale: {x: 1, y: 1}
+          offset: {x: 0, y: 0}
+      - first:
+          name: _EmissionMap
+        second:
+          texture: {fileID: 457286373, guid: 953f90f83ae7d4f9c8fc8fb77e2cfc0e, type: 3}
+          scale: {x: 1, y: 1}
+          offset: {x: 0, y: 0}
+      - first:
+          name: _MainTex
+        second:
+          texture: {fileID: -17142076, guid: 953f90f83ae7d4f9c8fc8fb77e2cfc0e, type: 3}
+          scale: {x: 1, y: 1}
+          offset: {x: 0, y: 0}
+      - first:
+          name: _MetallicGlossMap
+        second:
+          texture: {fileID: -1179011936, guid: 953f90f83ae7d4f9c8fc8fb77e2cfc0e, type: 3}
+          scale: {x: 1, y: 1}
+          offset: {x: 0, y: 0}
+      - first:
+          name: _OcclusionMap
+        second:
+          texture: {fileID: -1929365771, guid: 953f90f83ae7d4f9c8fc8fb77e2cfc0e, type: 3}
+          scale: {x: 1, y: 1}
+          offset: {x: 0, y: 0}
+      - first:
+          name: _ParallaxMap
+        second:
+          texture: {fileID: 886973674, guid: 953f90f83ae7d4f9c8fc8fb77e2cfc0e, type: 3}
+          scale: {x: 1, y: 1}
+          offset: {x: 0, y: 0}
       floats:
-        data:
-          first:
-            name: _SrcBlend
-          second: 1
-        data:
-          first:
-            name: _DstBlend
-          second: 0
-        data:
-          first:
-            name: _Cutoff
-          second: 0.5
-        data:
-          first:
-            name: _Parallax
-          second: 0.02
-        data:
-          first:
-            name: _ZWrite
-          second: 1
-        data:
-          first:
-            name: _Glossiness
-          second: 0.5
-        data:
-          first:
-            name: _BumpScale
-          second: 1
-        data:
-          first:
-            name: _OcclusionStrength
-          second: 1
-        data:
-          first:
-            name: _DetailNormalMapScale
-          second: 1
-        data:
-          first:
-            name: _UVSec
-          second: 0
-        data:
-          first:
-            name: _Mode
-          second: 0
-        data:
-          first:
-            name: _Metallic
-          second: 0
+      - first:
+          name: _BumpScale
+        second: 1
+      - first:
+          name: _Cutoff
+        second: 0.5
+      - first:
+          name: _DetailNormalMapScale
+        second: 1
+      - first:
+          name: _DstBlend
+        second: 0
+      - first:
+          name: _Glossiness
+        second: 0.5
+      - first:
+          name: _Metallic
+        second: 0
+      - first:
+          name: _Mode
+        second: 0
+      - first:
+          name: _OcclusionStrength
+        second: 1
+      - first:
+          name: _Parallax
+        second: 0.02
+      - first:
+          name: _SrcBlend
+        second: 1
+      - first:
+          name: _UVSec
+        second: 0
+      - first:
+          name: _ZWrite
+        second: 1
       colors:
-        data:
-          first:
-            name: _EmissionColor
-          second: {r: 1, g: 1, b: 1, a: 1}
-        data:
-          first:
-            name: _Color
-          second: {r: 1, g: 1, b: 1, a: 1}
+      - first:
+          name: _Color
+        second: {r: 1, g: 1, b: 1, a: 1}
+      - first:
+          name: _EmissionColor
+        second: {r: 1, g: 1, b: 1, a: 1}
     textureParameters:
     - name: DragonHeadA_albedoOpacity
       alphaSource: 6
