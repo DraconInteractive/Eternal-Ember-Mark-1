@@ -154,7 +154,7 @@ function ExportSubstance(substanceImporter : SubstanceImporter, substanceMateria
 			{
 				if (materialTexture.GetProceduralOutputType () == ProceduralOutputType.Normal) {
 					var textureImporter : TextureImporter	= AssetImporter.GetAtPath (newTexturePath) as TextureImporter;
-					textureImporter.textureType = TextureImporterType.Bump;
+					textureImporter.textureType = TextureImporterType.NormalMap;
 					AssetDatabase.ImportAsset (newTexturePath);
 				}
 			}

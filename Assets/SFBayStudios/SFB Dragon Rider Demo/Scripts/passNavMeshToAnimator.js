@@ -1,6 +1,6 @@
 ﻿#pragma strict
 
-var navMeshAgent		: NavMeshAgent;						// Agent for this character
+var navMeshAgent		: UnityEngine.AI.NavMeshAgent;						// Agent for this character
 var charAnimator		: Animator;							// Animator for this character
 var moveOffset			: float				= 1.0;			// Offset for movement value
 
