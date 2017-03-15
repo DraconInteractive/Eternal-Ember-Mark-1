@@ -5,7 +5,7 @@ using UnityEngine;
 public class Player : MonoBehaviour {
 
 	public static Player player;
-
+	Player_Movement p_Movement;
 	[HideInInspector]
 	public Rigidbody rb;
 
@@ -27,6 +27,7 @@ public class Player : MonoBehaviour {
 
 	void Start () {
 		SetInCombat (false);
+		p_Movement = Player_Movement.p_movement;
 	}
 	// Use this for initialization
 	void Update () {
@@ -107,11 +108,13 @@ public class Player : MonoBehaviour {
 	}
 
 	IEnumerator FTPickUpItem (GameObject g) {
+		p_Movement.canMove = false;
 		yield return new WaitForSeconds (0.8f);
 		Interactable inter = g.GetComponent<Interactable> ();
 		if (inter != null) {
 			inter.Interact ();
 		}
+		p_Movement.canMove = true;
 		yield break;
 	}
 }
