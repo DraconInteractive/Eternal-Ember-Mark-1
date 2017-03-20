@@ -6,6 +6,7 @@ public class Player : MonoBehaviour {
 
 	public static Player player;
 	Player_Movement p_Movement;
+	Player_UI p_UI;
 	[HideInInspector]
 	public Rigidbody rb;
 
@@ -14,20 +15,31 @@ public class Player : MonoBehaviour {
 	[HideInInspector]
 	public Animator anim;
 
-	public GameObject leftHandAttach, rightHandAttach, backHolster;
+	public GameObject leftHandAttach, rightHandAttach;
 	public Weapon playerWeapon;
+	public Shield playerShield;
 
 	public bool inCombat;
 	Coroutine attackRoutine;
+
+	public float currentHealth;
+	public float maxHealth;
+
 	void Awake () {
 		player = GetComponent<Player> ();
+
 		rb = GetComponent<Rigidbody> ();
 		anim = GetComponentInChildren<Animator> ();
 	}
 
 	void Start () {
+		p_UI = Player_UI.p_UI;
+
+
 		SetInCombat (false);
 		p_Movement = Player_Movement.p_movement;
+		currentHealth = maxHealth;
+		p_UI.UpdateHealthSlider (currentHealth, maxHealth);
 	}
 	// Use this for initialization
 	void Update () {
@@ -35,15 +47,19 @@ public class Player : MonoBehaviour {
 	}
 
 	void P_Input () {
-		if (Input.GetMouseButtonDown(0)) {
-			if (attackRoutine == null) {
-				attackRoutine = StartCoroutine (Attack ());
+		if (p_Movement.canMove) {
+			if (Input.GetMouseButtonDown(0)) {
+				if (attackRoutine == null) {
+					attackRoutine = StartCoroutine (Attack ());
+				}
+			}
+			if (Input.GetKeyDown(KeyCode.R)) {
+				SetInCombat (!inCombat);
 			}
 		}
 
-		if (Input.GetKeyDown(KeyCode.R)) {
-			SetInCombat (!inCombat);
-		}
+
+
 
 		if (Input.GetKeyDown(KeyCode.E)) {
 			if (inCombat) {
@@ -92,6 +108,14 @@ public class Player : MonoBehaviour {
 				playerWeapon.Holster ();
 			}
 		}
+
+		if (playerShield != null) {
+			if (state) {
+				playerShield.UnHolster ();
+			} else {
+				playerShield.Holster ();
+			}
+		}
 	}
 		
 	void InitPickUpItem () {
@@ -117,4 +141,17 @@ public class Player : MonoBehaviour {
 		p_Movement.canMove = true;
 		yield break;
 	}
+
+	public void ToggleCursor (bool state) {
+		Cursor.visible = state;
+		if (state) {
+			Cursor.lockState = CursorLockMode.None;
+		} else {
+			Cursor.lockState = CursorLockMode.Locked;
+		}
+	}
+
+
 }
+
+
