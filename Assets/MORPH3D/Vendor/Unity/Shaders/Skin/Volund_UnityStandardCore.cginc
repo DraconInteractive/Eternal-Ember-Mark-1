@@ -241,6 +241,20 @@ inline FragmentCommonData FragmentSetup (float4 i_tex, half3 i_eyeVec, half3 i_n
 	// NOTE: shader relies on pre-multiply alpha-blend (_SrcBlend = One, _DstBlend = OneMinusSrcAlpha)
 	o.diffColor = PreMultiplyAlpha (o.diffColor, alpha, o.oneMinusReflectivity, /*out*/ o.alpha);
 	o.alpha = alpha;
+
+#if _OVERLAY
+	//check for our overlay
+	half4 overlay = Overlay(i_tex.xy);
+	if (overlay.a > 0) {
+		//blend the overlay color with the overlay
+		overlay.rgb = ( overlay.rgb * (1 - _OverlayColor.a)) + (_OverlayColor.rgb * _OverlayColor.a);
+		//blend the overlay with the skin
+		overlay.rgb = ((1 - overlay.a) * o.diffColor.rgb) + (overlay.a * overlay.rgb);
+
+		o.diffColor = overlay;
+	}
+#endif
+
 	return o;
 }
 
@@ -404,20 +418,6 @@ half4 fragForwardBase (VertexOutputForwardBase i, float face : VFACE) : SV_Targe
 	half4 c = UNITY_BRDF_PBS (s.diffColor, s.specColor, s.oneMinusReflectivity, s.oneMinusRoughness, s.normalWorld, -s.eyeVec, gi.light, gi.indirect);
 	c.rgb += UNITY_BRDF_GI (s.diffColor, s.specColor, s.oneMinusReflectivity, s.oneMinusRoughness, s.normalWorld, -s.eyeVec, occlusion, gi);
 	c.rgb += Emission(i.tex.xy);
-
-	#if OVERLAY_ON
-		//half4 overlay = 0;
-		half4 overlay = Overlay(i.tex.xy);
-		//if (_OverlayColor.a > 0) {
-			overlay.rgb = (overlay.rgb * (1 - _OverlayColor.a)) + (_OverlayColor.rgb * _OverlayColor.a);
-		//}
-
-		//return overlay;
-		c.rgb = ((1 - overlay.a) * c.rgb) + (overlay.a * overlay.rgb);
-	#endif
-
-
-
 	UNITY_APPLY_FOG(i.fogCoord, c.rgb);
 	half4 final = OutputForward (c, s.alpha);
 	//final.a = 0.2;

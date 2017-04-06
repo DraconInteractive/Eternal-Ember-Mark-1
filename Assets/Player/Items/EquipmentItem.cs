@@ -5,6 +5,7 @@ using UnityEngine;
 public class EquipmentItem : Item {
 
 	public GameObject itemPrefab;
-	public enum equipmentType {Weapon, Offhand, Helm, Armour};
+	public enum equipmentType {Weapon, Offhand, Helm, Armour, Necklace, Earring};
 	public equipmentType itemType;
+	public float itemPower;
 }

@@ -18,6 +18,7 @@ public class Player_Camera : MonoBehaviour {
 	bool freeLookEnabled;
 	public bool invActive, atTarget;
 
+	float focusZOffset;
 	void Awake () {
 		p_camera = GetComponent<Player_Camera> ();
 	}
@@ -25,15 +26,13 @@ public class Player_Camera : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		player = Player.player;
+		focusZOffset = 0;
 	}
 
-//	void Update () {
-//		if (Input.GetMouseButtonDown(1)) {
-//			freeLookEnabled = true;
-//		} else {
-//			freeLookEnabled = false;
-//		}
-//	}
+	void Update () {
+		focusZOffset += Input.GetAxis ("Mouse ScrollWheel") * 2;
+		focusZOffset = Mathf.Clamp (focusZOffset, -1, 1);
+	}
 
 	// Update is called once per frame
 	void FixedUpdate () {
@@ -43,32 +42,13 @@ public class Player_Camera : MonoBehaviour {
 			CameraMovement (camOffset, headPoint.transform.position + headPoint.transform.forward * 3.0f, 0.05f);
 		}
 
-//		if (!freeLookEnabled) {
-//			
-//		}
 	}
 
 	void CameraMovement (Vector3 target, Vector3 lookTarget, float moveTime) {
-//		transform.position = Vector3.SmoothDamp (transform.position, player.transform.position + (player.transform.right * target.x) + (player.transform.up * target.y) - (player.transform.forward * target.z), ref cameraVelocity, moveTime);
-//
-//		float targetDist = Vector3.Distance (transform.position, player.transform.position + (player.transform.right * target.x) + (player.transform.up * target.y) - (player.transform.forward * target.z));
-//		if (targetDist < 0.1f) {
-//			atTarget = true;
-//		} else {
-//			atTarget = false;
-//		}
-//
-//		if (invActive) {
-//			if (targetDist < 1.5f) {
-////				transform.LookAt (lookTarget);
-//				Vector3 targetDir = lookTarget - transform.position;
-//				transform.rotation = Quaternion.RotateTowards(transform.rotation, Quaternion.LookRotation(targetDir, Vector3.up), 45 * Time.deltaTime);
-//			}
-//		} else {
-//			transform.LookAt (lookTarget);
-//		}
-
-		transform.position = Vector3.SmoothDamp (transform.position, player.transform.position + (player.transform.right * target.x) + (player.transform.up * target.y) - (player.transform.forward * target.z), ref cameraVelocity, moveTime);
+		target.z -= focusZOffset;
+//		print (focusZOffset.ToString());
+		Vector3 targetPosition = player.transform.position + (player.transform.right * target.x) + (player.transform.up * target.y) - (player.transform.forward * target.z);
+		transform.position = Vector3.SmoothDamp (transform.position, targetPosition, ref cameraVelocity, moveTime);
 		transform.LookAt (lookTarget);
 	}
 		

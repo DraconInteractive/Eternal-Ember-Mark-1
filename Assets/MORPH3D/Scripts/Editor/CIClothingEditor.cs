@@ -173,6 +173,7 @@ namespace MORPH3D.EDITORS
 
 			//EditorGUILayout.LabelField("LOD Level", myTarget.Level.ToString());
 		}
-	}
+
+    }
 }
 

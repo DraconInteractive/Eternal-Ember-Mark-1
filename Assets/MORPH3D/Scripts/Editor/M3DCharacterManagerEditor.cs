@@ -60,6 +60,10 @@ namespace MORPH3D.EDITORS
                 return;
             }
 
+            GUIStyle m3dDefaultButtonStyle = new GUIStyle(GUI.skin.button);
+            m3dDefaultButtonStyle.margin = new RectOffset(10,10,5,5);
+            m3dDefaultButtonStyle.padding = new RectOffset(5, 5, 5, 5);
+
 			#endregion just_stuff
 
 			
@@ -92,7 +96,7 @@ namespace MORPH3D.EDITORS
                 GUILayout.EndHorizontal();
                 EditorGUILayout.Space();
 
-                if (GUILayout.Button("Reset All"))
+                if (GUILayout.Button("Reset All", m3dDefaultButtonStyle))
                 {
                     Undo.RecordObject(charMan, "Change Morph");
                     for (int i = 0; i < charMan.coreMorphs.morphs.Count; i++)
@@ -105,7 +109,7 @@ namespace MORPH3D.EDITORS
                     EditorUtility.SetDirty(charMan);
                 }
                 EditorGUILayout.Space();
-                if (GUILayout.Button("Detach All"))
+                if (GUILayout.Button("Detach All", m3dDefaultButtonStyle))
                 {
                     Undo.RecordObject(charMan, "Detach All Morphs");
                     charMan.RemoveAllMorphs();
@@ -157,6 +161,9 @@ namespace MORPH3D.EDITORS
 
 			if(showContentPacks)
 			{
+
+
+
 				EditorGUI.indentLevel++;
 				List<ContentPack> allPacks = charMan.GetAllContentPacks();
 				for(int i = 0; i < allPacks.Count; i++)
@@ -204,7 +211,7 @@ namespace MORPH3D.EDITORS
 				}
 
 
-                if(GUILayout.Button("Import Selected From Project Pane"))
+                if(GUILayout.Button("Import Selected From Project Pane", m3dDefaultButtonStyle))
                 {
                     string[] guids = Selection.assetGUIDs;
                     List<string> paths = new List<string>();
@@ -240,6 +247,11 @@ namespace MORPH3D.EDITORS
                             }
                         }
                     }
+                }
+
+                if(GUILayout.Button("Clear Lingering Content Packs", m3dDefaultButtonStyle))
+                {
+                    charMan.RemoveRogueContent();
                 }
 
 				EditorGUI.indentLevel--;
@@ -315,12 +327,17 @@ namespace MORPH3D.EDITORS
 			if(selectedPropsNames == null || selectedPropsNames.Length != attachmentPoints.Length)
 				selectedPropsNames = new string[attachmentPoints.Length];
 			List<CIprop> props = charMan.GetAllLoadedProps();
+            Dictionary<string, string> idToName = new Dictionary<string, string>();
 			string[] propsNames = new string[]{};
 			if(props != null){
 				propsNames = new string[props.Count];
+
 			}
-			for(int i = 0; i < propsNames.Length; i++)
-				propsNames[i] = props[i].ID;
+            for (int i = 0; i < propsNames.Length; i++)
+            {
+                propsNames[i] = props[i].dazName + "|" + props[i].ID;
+                idToName[props[i].ID] = props[i].dazName;
+            }
 
 			showAttachmentPoints = EditorGUILayout.Foldout (showAttachmentPoints, "Attachment Points");
 			if(showAttachmentPoints)
@@ -358,18 +375,34 @@ namespace MORPH3D.EDITORS
 //							Debug.Log("FDFG");
 							EditorGUILayout.Space();
 							EditorGUILayout.BeginHorizontal();
-							EditorGUILayout.LabelField("Add Prop:", GUILayout.Width(150));
-							EditorGUILayout.LabelField(selectedPropsNames[i], GUILayout.Width(150));
+
+                            string propDisplay = !string.IsNullOrEmpty(selectedPropsNames[i]) ? idToName[selectedPropsNames[i]] : null;
+
+                            EditorGUILayout.LabelField("Add Prop:", GUILayout.Width(150));
+							EditorGUILayout.LabelField(propDisplay, GUILayout.Width(150));
 							if(selectedPropsNames[i] != "" && selectedPropsNames[i] != null && charMan.GetLoadedPropByName(selectedPropsNames[i]) == null)
 								selectedPropsNames[i] = "";
 							if(GUILayout.Button("Search"))
 							{
 								int num = i;
-								SearchableWindow.Init(delegate(string newName) { selectedPropsNames[num] = newName; }, propsNames);
+								SearchableWindow.Init(delegate(string newName) {
+
+                                    string id = newName;
+                                    int pos = newName.LastIndexOf('|');
+                                    if (pos >= 0)
+                                    {
+                                        id = newName.Substring(pos + 1);
+                                    }
+
+                                    UnityEngine.Debug.Log("ID: " + id);
+
+                                    selectedPropsNames[num] = id;
+                                }, propsNames);
 							}
 							if(selectedPropsNames[i] != "" && selectedPropsNames[i] != null && GUILayout.Button("Add"))
 							{
 								Undo.RecordObject(charMan, "Attach Prop");
+                                UnityEngine.Debug.Log("Prop:" + selectedPropsNames[i]);
 								charMan.AttachPropToAttachmentPoint(selectedPropsNames[i], attachmentPoints[i].attachmentPointName);
 								EditorUtility.SetDirty(charMan);
 								selectedPropsNames[i] = "";
@@ -632,11 +665,18 @@ namespace MORPH3D.EDITORS
             EditorMorphState ems = new EditorMorphState();
             ems.dirty = false;
 
+            GUILayoutOption[] optionsLabel = new GUILayoutOption[] { GUILayout.MaxWidth(200.0f), GUILayout.MinWidth(25.0f) };
+            GUILayoutOption[] optionsSlider = new GUILayoutOption[] { GUILayout.MaxWidth(200.0f), GUILayout.MinWidth(50.0f) };
+            GUILayoutOption[] optionsKey = new GUILayoutOption[] { GUILayout.MaxWidth(200.0f), GUILayout.MinWidth(0.0f), GUILayout.Height(EditorGUIUtility.singleLineHeight) };
+            GUILayoutOption[] optionsToggle = new GUILayoutOption[] { GUILayout.Width(20f) };
+
             EditorGUILayout.BeginHorizontal();
             //Show the slider between 0% and 100% for the morph
-            ems.value = EditorGUILayout.Slider(morph.displayName, morph.value, 0f, 100f);
+
+            EditorGUILayout.LabelField(morph.displayName, optionsLabel);
+            ems.value = EditorGUILayout.Slider(morph.value, 0f, 100f, optionsSlider);
             //Show the checkbox for if this morph should be installed to the figure/mesh
-            ems.attached = EditorGUILayout.Toggle(morph.attached, GUILayout.Width(60)); //most efficient way, but not necessarily the most accurate way
+            ems.attached = EditorGUILayout.Toggle(morph.attached, optionsToggle); //most efficient way, but not necessarily the most accurate way
             //ems.attached = EditorGUILayout.Toggle(charMan.coreMorphs.morphGroups["Attached"].Contains(morph)); //most accurate way but not O(1);
             //has a property changed?
             if (ems.attached != morph.attached)
@@ -644,16 +684,16 @@ namespace MORPH3D.EDITORS
                 ems.dirtyAttached = true;
                 ems.dirty = true;
             }
-            if (Mathf.Abs(ems.value-morph.value) > 0.001f)
+            if (Mathf.Abs(ems.value - morph.value) > 0.001f)
             {
                 ems.dirtyValue = true;
                 ems.dirty = true;
             }
 
-            EditorGUILayout.SelectableLabel(morph.localName, EditorStyles.textField, GUILayout.Height(EditorGUIUtility.singleLineHeight));
+            EditorGUILayout.SelectableLabel(morph.localName, EditorStyles.textField, optionsKey);
 
             EditorGUILayout.EndHorizontal();
-            
+
             return ems;
         }
         #endregion
@@ -688,7 +728,7 @@ namespace MORPH3D.EDITORS
 		{
 			bool result;
 			EditorGUILayout.BeginHorizontal();
-			EditorGUILayout.LabelField (prop.ID, GUILayout.Width(180));
+			EditorGUILayout.LabelField (prop.dazName, GUILayout.Width(180));
 			GUILayout.Space (60);
 			result = GUILayout.Button ("Disable", GUILayout.Width(60));
 			EditorGUILayout.EndHorizontal();
@@ -713,7 +753,8 @@ namespace MORPH3D.EDITORS
 			
 			return result;
 		}
-		#endregion hair_display
-	}
+        #endregion hair_display
+
+    }
 
 }

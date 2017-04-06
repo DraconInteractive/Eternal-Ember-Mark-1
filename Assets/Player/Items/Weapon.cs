@@ -17,6 +17,7 @@ public class Weapon : Interactable{
 
 	public enum weaponType {MH_SWORD, MH_DAGGER, OH_DAGGER};
 	public weaponType w_type;
+
 	void Start () {
 		player = Player.player;
 		p_inv = Player_Inventory.p_inventory;

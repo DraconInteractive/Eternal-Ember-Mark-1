@@ -226,7 +226,7 @@ float4 Parallax (float4 texcoords, half3 viewDir)
 
 half4 Overlay(float2 uv)
 {
-#if !defined(OVERLAY_ON)
+#if !defined(_OVERLAY)
 	return 0;
 #else
 	return tex2D(_Overlay, uv);

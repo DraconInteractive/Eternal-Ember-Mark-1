@@ -14,8 +14,6 @@ public class HairRenderer : MonoBehaviour {
 	public float		frontBackAlphaRef = 0.01f;
 	public DebugMode	debugMode = DebugMode.DBG_NONE;
 
-    public bool         bakeMesh = false;
-
 	// DynamicRadialDistance not really supported these days.
 	[HideInInspector] public Transform[]headSpheres;
 	[HideInInspector] public Transform	headShell;
@@ -34,33 +32,12 @@ public class HairRenderer : MonoBehaviour {
 		debugMode = DebugMode.DBG_NONE;
 
 		gameObject.layer = sourceRenderer.gameObject.layer;
-        if (sourceRenderer is MeshRenderer)
-            m_sourceMesh = ((MeshRenderer)sourceRenderer).GetComponent<MeshFilter>().sharedMesh;
-        else if (sourceRenderer is SkinnedMeshRenderer)
-        {
-            if (bakeMesh)
-            {
-                SkinnedMeshRenderer smr = (SkinnedMeshRenderer)sourceRenderer;
-                m_sourceMesh = smr.sharedMesh;
-                Vector3 origin = smr.rootBone.transform.localPosition;
-                m_sourceMesh = new Mesh();
-                smr.BakeMesh(m_sourceMesh);
-                Vector3[] vertices = m_sourceMesh.vertices;
-
-                for (int i = 0; i < vertices.Length; i++)
-                {
-                    vertices[i] -= origin;
-                }
-                m_sourceMesh.vertices = vertices;
-                m_sourceMesh.RecalculateBounds();
-            }
-            else
-            {
-                m_sourceMesh = ((SkinnedMeshRenderer)sourceRenderer).sharedMesh;
-            }
-        }
-        else
-            Debug.LogError("Invalid source renderer type");
+		if(sourceRenderer is MeshRenderer)
+			m_sourceMesh = ((MeshRenderer)sourceRenderer).GetComponent<MeshFilter>().sharedMesh;
+		else if(sourceRenderer is SkinnedMeshRenderer)
+			m_sourceMesh = ((SkinnedMeshRenderer)sourceRenderer).sharedMesh;
+		else
+			Debug.LogError("Invalid source renderer type");
 
 		CreateMeshData();
 		CreateMaterials();

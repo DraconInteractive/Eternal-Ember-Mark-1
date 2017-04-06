@@ -5,15 +5,16 @@ using UnityEngine;
 public class Player_Inventory : MonoBehaviour {
 
 	public static Player_Inventory p_inventory;
+	PossessionController pc_controller;
 	Player player;
 	Player_Camera p_camera;
 	Player_Movement p_movement;
 	Player_UI p_UI;
 
-	public GameObject inventoryPanel, slotPanel, equipmentPanel, toolPanel;
+	public GameObject inventoryPanel, slotPanel, equipmentPanel;
 
 	public List<INV_Slot> invSlots = new List<INV_Slot>();
-	public EQU_Slot helmSlot, armourSlot, weaponSlot, offhandSlot;
+	public EQU_Slot helmSlot, armourSlot, weaponSlot, offhandSlot, earOneSlot, earTwoSlot, neckSlot;
 
 	public bool inventoryOpen;
 
@@ -31,6 +32,7 @@ public class Player_Inventory : MonoBehaviour {
 		p_camera = Player_Camera.p_camera;
 		p_movement = Player_Movement.p_movement;
 		p_UI = Player_UI.p_UI;
+		pc_controller = PossessionController.pc_controller;
 		ToggleInventory (false);
 
 		if (initialItems.Count > 0) {
@@ -53,11 +55,18 @@ public class Player_Inventory : MonoBehaviour {
 	}
 
 	public void ToggleInventory (bool state) {
+		if (pc_controller.currentHost != PossessionController.hostType.PLAYER && state == true) {
+			return;
+		}
 		if (state) {
+			if (!p_movement.canMove) {
+				return;
+			}
 			if (toggleRoutine == null) {
 				toggleRoutine = StartCoroutine (Open ());
 			}
 		} else {
+			
 			if (toggleRoutine == null) {
 				toggleRoutine = StartCoroutine (Close ());
 			}
@@ -76,6 +85,7 @@ public class Player_Inventory : MonoBehaviour {
 //			}
 //			yield return null;
 //		}
+		Player_Movement.p_movement.canMove = false;
 		p_camera.invActive = true;
 		yield return null;
 		p_camera.INVInitiator ();
@@ -97,6 +107,7 @@ public class Player_Inventory : MonoBehaviour {
 	}
 
 	IEnumerator Close () {
+		Player_Movement.p_movement.canMove = true;
 		p_camera.atTarget = false;
 		p_camera.invActive = false;
 //		p_camera.GetComponent<Camera> ().enabled = true;
@@ -273,11 +284,82 @@ public class Player_Inventory : MonoBehaviour {
 				helmSlot.RecieveItem (item, 1);
 			}
 			break;
+		case EquipmentItem.equipmentType.Necklace:
+			if (neckSlot.hasItem) {
+				if (item.slot != null) {
+					Item currentNeck = neckSlot.slotItem;
+					Item futureNeck = item;
+
+					INV_Slot cnSlot = currentNeck.slot.GetComponent<INV_Slot> ();
+					INV_Slot fnSlot = futureNeck.slot.GetComponent<INV_Slot> ();
+
+					cnSlot.EmptyItemSlot ();
+					fnSlot.EmptyItemSlot ();
+					cnSlot.RecieveItem (currentNeck, 1);
+					fnSlot.RecieveItem (futureNeck, 1);
+				}
+			} else {
+				if (item.slot != null) {
+					item.slot.GetComponent<INV_Slot> ().EmptyItemSlot();
+				}
+
+				neckSlot.RecieveItem (item, 1);
+			}
+			break;
 		}
 		p_UI.SpawnEventText (item.itemName + " equipped on player");
 	}
 
-	public void AddItemToHotBar (Item item, int quantity) {
+	public void EquipItem (EquipmentItem item, int earSlotNum) {
 		
+		switch (earSlotNum)
+		{
+		case 1:
+			if (earOneSlot.hasItem) {
+				if (item.slot != null) {
+					Item currentEarring = earOneSlot.slotItem;
+					Item futureEarring = item;
+
+					INV_Slot ceSlot = currentEarring.slot.GetComponent<INV_Slot> ();
+					INV_Slot feSlot = futureEarring.slot.GetComponent<INV_Slot> ();
+
+					ceSlot.EmptyItemSlot ();
+					feSlot.EmptyItemSlot ();
+					ceSlot.RecieveItem (currentEarring, 1);
+					feSlot.RecieveItem (futureEarring, 1);
+				}
+			} else {
+				if (item.slot != null) {
+					item.slot.GetComponent<INV_Slot> ().EmptyItemSlot ();
+				}
+
+				earOneSlot.RecieveItem (item, 1);
+			}
+			break;
+		case 2:
+			if (earTwoSlot.hasItem) {
+				if (item.slot != null) {
+					Item currentEarring = earTwoSlot.slotItem;
+					Item futureEarring = item;
+
+					INV_Slot ceSlot = currentEarring.slot.GetComponent<INV_Slot> ();
+					INV_Slot feSlot = futureEarring.slot.GetComponent<INV_Slot> ();
+
+					ceSlot.EmptyItemSlot ();
+					feSlot.EmptyItemSlot ();
+					ceSlot.RecieveItem (currentEarring, 1);
+					feSlot.RecieveItem (futureEarring, 1);
+				}
+			} else {
+				if (item.slot != null) {
+					item.slot.GetComponent<INV_Slot> ().EmptyItemSlot ();
+				}
+
+				earTwoSlot.RecieveItem (item, 1);
+			}
+			break;
+		}
+			
+		p_UI.SpawnEventText (item.itemName + " equipped on player");
 	}
 }

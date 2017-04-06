@@ -26,7 +26,10 @@ public class Player_Movement : MonoBehaviour {
 	}
 
 	void Update () {
-		anim.SetFloat ("speed", Input.GetAxis ("Vertical"));
+		if (canMove) {
+			anim.SetFloat ("speed", Input.GetAxis ("Vertical"));
+		}
+
 	}
 
 	// Update is called once per frame

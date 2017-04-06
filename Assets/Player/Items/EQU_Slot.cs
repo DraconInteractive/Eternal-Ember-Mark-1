@@ -6,6 +6,8 @@ public class EQU_Slot : INV_Slot {
 
 	Color slotImageInitColour;
 
+
+	public int earringSLotN;
 	public override void SlotStart ()
 	{
 		base.SlotStart ();
@@ -17,7 +19,7 @@ public class EQU_Slot : INV_Slot {
 		if (slotItem != null) {
 			Item i = slotItem;
 			EmptyItemSlot ();
-			Player_Inventory.p_inventory.AddItemToInventory (i, 1);
+			p_inv.AddItemToInventory (i, 1);
 			if (slotItem is EquipmentItem) {
 
 				switch ((slotItem as EquipmentItem).itemType)
@@ -69,7 +71,12 @@ public class EQU_Slot : INV_Slot {
 		if (i != null) {
 			if (i is EquipmentItem) {
 				print ("!NULL+EQUI");
-				Player_Inventory.p_inventory.EquipItem ((i as EquipmentItem));
+				if ((i as EquipmentItem).itemType == EquipmentItem.equipmentType.Earring) {
+					p_inv.EquipItem ((i as EquipmentItem), earringSLotN);
+				} else {
+					p_inv.EquipItem ((i as EquipmentItem));
+				}
+
 			} else {
 				print ("!NULL+!EQUI");
 			}

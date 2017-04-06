@@ -45,6 +45,8 @@ public class M3DResourceEditor : Editor {
                 bool export = GUILayout.Button("Export",GUILayout.Width(100));
                 if (export)
                 {
+                    string outputFile = m3dresource.header.DirectoryPath + "/" + m3dresource.header.Keys[i];
+                    UnityEngine.Debug.Log("Exporting to: " + outputFile);
                     m3dresource.UnpackResource(m3dresource.header.Keys[i]);
                     AssetDatabase.Refresh();
                 }

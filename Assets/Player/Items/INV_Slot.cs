@@ -4,8 +4,8 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class INV_Slot : MonoBehaviour {
-
-	Player_Inventory p_inv;
+	[HideInInspector]
+	public Player_Inventory p_inv;
 	public Item slotItem;
 
 	public bool hasItem;

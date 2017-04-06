@@ -43,6 +43,7 @@
 			fixed Alpha;        // alpha for transparencies
 			float3 lightDir;
 			float3 viewDir;
+			float2 uv;
 		};
 
 		half _Spread;
@@ -55,7 +56,8 @@
 			c.rgb = s.Albedo * _LightColor0.rgb * (NdotL * atten);
 			c.a = s.Alpha;
 
-			bool isEye = (s.Albedo.r + s.Albedo.g + s.Albedo.b ) > 2.7;
+			//our eyes are to the right of this point in the uv space
+			bool isEye = s.uv.x > 0.415;
 
 			//is this our eye or eyelash?
 			if (isEye) {
@@ -75,6 +77,7 @@
 
 		void surf (Input IN, inout SurfOut o) {
 			fixed4 c = tex2D (_MainTex, IN.uv_MainTex) * _Color;
+			o.uv = IN.uv_MainTex;
 			o.Albedo = c.rgb;
 			o.Alpha = c.a;
 		}

@@ -42,9 +42,19 @@ public class SearchableWindow : EditorWindow
 			if(searchString != "" && option.IndexOf(searchString, System.StringComparison.OrdinalIgnoreCase) < 0)
 				continue;
 			GUILayout.BeginHorizontal();
-			EditorGUILayout.LabelField(option);
+
+            string display = option;
+
+            int pos = option.LastIndexOf("|");
+            if (pos >= 0)
+            {
+                display = option.Substring(0, pos);
+            }
+
+			EditorGUILayout.LabelField(display);
 			if(GUILayout.Button("Select", GUILayout.Width(75)))
 			{
+                UnityEngine.Debug.Log("Selected: " + option);
 				action(option);
 				windowInstance.Close();
 			}

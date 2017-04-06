@@ -5,6 +5,8 @@ Shader "Morph3D/Volund Variants/Standard Character (Specular, Surface)"
 		_Color("Color", Color) = (1,1,1,1)
 		_MainTex("Albedo", 2D) = "white" {}
 		_AlphaTex("Alpha", 2D) = "white" {}
+		_Overlay("Overlay",2D) = "clear" {}
+		_OverlayColor("OverlayColor", Color) = (0,0,0,0)
 		
 		_Cutoff("Alpha Cutoff", Range(0.0, 1.0)) = 0.5
 
@@ -30,8 +32,6 @@ Shader "Morph3D/Volund Variants/Standard Character (Specular, Surface)"
 		_DetailNormalMapScale("Scale", Float) = 1.0
 		_DetailNormalMap("Normal Map", 2D) = "bump" {}
 
-		_Overlay("Overlay",2D) = "clear" {}
-		_OverlayColor("OverlayColor", Color) = (0,0,0,0)
 
 		[Enum(UV0,0,UV1,1)] _UVSec ("UV Set for secondary textures", Float) = 0
 
@@ -92,6 +92,7 @@ Shader "Morph3D/Volund Variants/Standard Character (Specular, Surface)"
 			#pragma shader_feature _SPECGLOSSMAP
 			#pragma shader_feature ___ _DETAIL_MULX2
 			#pragma shader_feature _AlphaTex
+			#pragma shader_feature _OVERLAY
 
 						// Volund variants
 			#pragma shader_feature SMOOTHNESS_IN_ALBEDO
@@ -131,6 +132,7 @@ Shader "Morph3D/Volund Variants/Standard Character (Specular, Surface)"
 			#pragma shader_feature _ _ALPHATEST_ON _ALPHABLEND_ON _ALPHAPREMULTIPLY_ON
 			#pragma shader_feature _SPECGLOSSMAP
 			#pragma shader_feature ___ _DETAIL_MULX2
+			#pragma shader_feature _OVERLAY
 
 			
 			// Volund variants

@@ -31,6 +31,8 @@ class VolundMultiStandardShaderGUI : ShaderGUI
 		public static GUIContent albedoText = new GUIContent("Albedo", "Albedo (RGB) - no Transparency-");
 		public static GUIContent alphaText = new GUIContent("Alpha", "Transparency (A) in B&W");
 		public static GUIContent alphaCutoffText = new GUIContent("Alpha Cutoff", "Threshold for alpha cutoff");
+		public static GUIContent overlayText = new GUIContent("Overlay", "Apply another texture on top of the skin");
+		public static GUIContent overlayColorText = new GUIContent("Overlay Color", "Tint the overlay");
 		public static GUIContent specularMapText = new GUIContent("Specular", "Specular (RGB) and Smoothness (A)");
 		public static GUIContent metallicMapText = new GUIContent("Metallic", "Metallic (R) and Smoothness (A)");
 		public static GUIContent smoothnessText = new GUIContent("Smoothness", "");
@@ -61,6 +63,8 @@ class VolundMultiStandardShaderGUI : ShaderGUI
 	MaterialProperty alphaMap = null;
 	MaterialProperty albedoColor = null;
 	MaterialProperty alphaCutoff = null;
+	MaterialProperty overlayMap = null;
+	MaterialProperty overlayColor = null;
 	MaterialProperty specularMap = null;
 	MaterialProperty specularColor = null;
 	MaterialProperty metallicMap = null;
@@ -100,6 +104,8 @@ class VolundMultiStandardShaderGUI : ShaderGUI
 		alphaMap = FindProperty ("_AlphaTex", props);
 		albedoColor = FindProperty ("_Color", props);
 		alphaCutoff = FindProperty ("_Cutoff", props);
+		overlayMap = FindProperty ("_Overlay", props);
+		overlayColor = FindProperty ("_OverlayColor", props);
 		specularMap = FindProperty ("_SpecGlossMap", props, false);
 		specularColor = FindProperty ("_SpecColor", props, false);
 		metallicMap = FindProperty ("_MetallicGlossMap", props, false);
@@ -318,6 +324,8 @@ class VolundMultiStandardShaderGUI : ShaderGUI
 	{
 		m_MaterialEditor.TexturePropertySingleLine(Styles.albedoText, albedoMap, albedoColor);
 		m_MaterialEditor.TexturePropertySingleLine(Styles.alphaText, alphaMap);
+		m_MaterialEditor.TexturePropertySingleLine(Styles.overlayText, overlayMap);
+        m_MaterialEditor.ColorProperty(overlayColor, overlayColor.displayName);
 		if (((BlendMode)material.GetFloat("_Mode") == BlendMode.Cutout))
 		{
 			m_MaterialEditor.ShaderProperty(alphaCutoff, Styles.alphaCutoffText.text, MaterialEditor.kMiniTextureFieldLabelIndentLevel+1);
@@ -440,6 +448,7 @@ class VolundMultiStandardShaderGUI : ShaderGUI
 				material.renderQueue = 3000;
 				break;
 		}
+        
 	}
 	
 	static bool ShouldEmissionBeEnabled (Color color)
@@ -474,6 +483,8 @@ class VolundMultiStandardShaderGUI : ShaderGUI
 
 			material.globalIlluminationFlags = flags;
 		}
+
+        SetKeyword(material, "_OVERLAY", material.GetTexture("_Overlay"));
 	}
 
 	bool HasValidEmissiveKeyword (Material material)

@@ -5,8 +5,10 @@ using UnityEngine;
 public class Player : MonoBehaviour {
 
 	public static Player player;
-	Player_Movement p_Movement;
+	[HideInInspector]
+	public Player_Movement p_Movement;
 	Player_UI p_UI;
+	PossessionController pc_controller;
 	[HideInInspector]
 	public Rigidbody rb;
 
@@ -25,6 +27,18 @@ public class Player : MonoBehaviour {
 	public float currentHealth;
 	public float maxHealth;
 
+	public float playerDamage;
+	public float playerUnarmedDamage;
+
+	public GameObject playerCamera;
+
+	public GameObject yyParticle;
+
+	public int currentAttack;
+
+	public bool blocking;
+
+	public bool possessed;
 	void Awake () {
 		player = GetComponent<Player> ();
 
@@ -34,8 +48,7 @@ public class Player : MonoBehaviour {
 
 	void Start () {
 		p_UI = Player_UI.p_UI;
-
-
+		pc_controller = PossessionController.pc_controller;
 		SetInCombat (false);
 		p_Movement = Player_Movement.p_movement;
 		currentHealth = maxHealth;
@@ -47,51 +60,57 @@ public class Player : MonoBehaviour {
 	}
 
 	void P_Input () {
-		if (p_Movement.canMove) {
-			if (Input.GetMouseButtonDown(0)) {
-				if (attackRoutine == null) {
-					attackRoutine = StartCoroutine (Attack ());
-				}
-			}
-			if (Input.GetKeyDown(KeyCode.R)) {
-				SetInCombat (!inCombat);
+		if (!p_Movement.canMove || !possessed) {
+			return;
+		}
+
+		if (Input.GetMouseButtonDown(0)) {
+			if (attackRoutine == null) {
+				attackRoutine = StartCoroutine (Attack ());
 			}
 		}
 
+		if (Input.GetMouseButtonDown(1)) {
+			blocking = true;
+			anim.SetBool ("Blocking", true);
+		}
 
+		if (Input.GetMouseButtonUp(1)){
+			blocking = false;
+			anim.SetBool ("Blocking", false);
+		}
 
+		if (Input.GetKeyDown(KeyCode.R)) {
+			SetInCombat (!inCombat);
+		}
 
 		if (Input.GetKeyDown(KeyCode.E)) {
 			if (inCombat) {
-				
+
 			} else {
 				InitPickUpItem ();
 			}
-
 		}
+			
 	}
-
+		
 	IEnumerator Attack () {
 		if (!inCombat) {
 			SetInCombat (true);
+		}
+		if (playerWeapon != null) {
+			playerDamage = playerWeapon.thisItem.itemPower;
+		} else {
+			playerDamage = playerUnarmedDamage;
 		}
 		Collider[] c = Physics.OverlapCapsule (transform.position + transform.forward, transform.position + transform.forward + transform.up * 1.5f, 1);
 		anim.SetTrigger ("Attack");
 		yield return new WaitForSeconds (0.25f);
 		for (int i = 0; i < c.Length; i++) {
 			if (c[i].tag == "Enemy") {
-				c [i].gameObject.GetComponent<Enemy> ().Damage ();
+				c [i].gameObject.GetComponent<Health> ().Damage (playerDamage);
 			}
 		}
-//		if (playerWeapon != null) {
-//			playerWeapon.attacking = true;
-//		}
-//
-//		anim.SetTrigger ("Attack");
-//		yield return new WaitForSeconds (0.25f);
-//		if (playerWeapon != null) {
-//			playerWeapon.attacking = false;
-//		}
 
 		attackRoutine = null;
 		yield break;
@@ -103,23 +122,27 @@ public class Player : MonoBehaviour {
 
 		if (playerWeapon != null) {
 			if (state) {
+				anim.SetBool ("Armed", true);
 				playerWeapon.UnHolster ();
 			} else {
 				playerWeapon.Holster ();
 			}
+
+			if (playerShield != null) {
+				if (state) {
+					playerShield.UnHolster ();
+				} else {
+					playerShield.Holster ();
+				}
+			}
+		} else {
+			anim.SetBool ("Armed", false);
 		}
 
-		if (playerShield != null) {
-			if (state) {
-				playerShield.UnHolster ();
-			} else {
-				playerShield.Holster ();
-			}
-		}
+
 	}
 		
 	void InitPickUpItem () {
-//		Collider[] c = Physics.OverlapSphere (transform.position + transform.forward * 1 + Vector3.up * 0.1f, 1);
 		Collider[] c = Physics.OverlapCapsule (transform.position + transform.forward, transform.position + transform.forward + transform.up, 1);
 
 		foreach (Collider co in c) {
@@ -150,8 +173,7 @@ public class Player : MonoBehaviour {
 			Cursor.lockState = CursorLockMode.Locked;
 		}
 	}
-
-
+		
 }
 
 
