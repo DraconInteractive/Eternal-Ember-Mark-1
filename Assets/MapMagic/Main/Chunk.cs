@@ -42,7 +42,7 @@ namespace MapMagic
 			[System.NonSerialized] private Terrain oldNeig_Z = null;
 			public void SetNeighbors (bool force=false)
 			{
-			Profiler.BeginSample("Set Neigs");
+			UnityEngine.Profiling.Profiler.BeginSample("Set Neigs");
 				TerrainGrid terrains = MapMagic.instance.terrains;
 
 				Terrain newNeig_x = terrains.GetTerrain(coord.x-1, coord.z, onlyComplete:false);
@@ -57,7 +57,7 @@ namespace MapMagic
 
 					oldNeig_x = newNeig_x;  oldNeig_Z = newNeig_Z;  oldNeig_X = newNeig_X;  oldNeig_z = newNeig_z;
 				}
-			Profiler.EndSample();
+			UnityEngine.Profiling.Profiler.EndSample();
 			}
 
 			//defaults

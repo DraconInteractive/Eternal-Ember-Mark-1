@@ -292,7 +292,7 @@ namespace MapMagic
 			//unity 5.4 beta
 			if (Event.current.type == EventType.MouseDrag || Event.current.type == EventType.layout) return; 
 
-			if (script.guiDebug) Profiler.BeginSample("Redraw Window");
+			if (script.guiDebug) UnityEngine.Profiling.Profiler.BeginSample("Redraw Window");
 
 			//using middle mouse click events
 			if (Event.current.button == 2) Event.current.Use();
@@ -336,7 +336,7 @@ namespace MapMagic
 			}
 
 			#region Drawing groups
-			if (script.guiDebug) Profiler.BeginSample("Drawing Groups");
+			if (script.guiDebug) UnityEngine.Profiling.Profiler.BeginSample("Drawing Groups");
 
 				for(int i=0; i<gens.list.Length; i++)
 				{
@@ -358,11 +358,11 @@ namespace MapMagic
 					group.guiRect = group.layout.field;
 				}
 			
-			if (script.guiDebug) Profiler.EndSample();
+			if (script.guiDebug) UnityEngine.Profiling.Profiler.EndSample();
 			#endregion
 
 			#region Drawing connections (before generators to make them display under nodes)
-			if (script.guiDebug) Profiler.BeginSample("Drawing Connections");
+			if (script.guiDebug) UnityEngine.Profiling.Profiler.BeginSample("Drawing Connections");
 
 				foreach(Generator gen in gens.list)
 				{
@@ -378,11 +378,11 @@ namespace MapMagic
 					}
 				}
 
-			if (script.guiDebug) Profiler.EndSample();
+			if (script.guiDebug) UnityEngine.Profiling.Profiler.EndSample();
 			#endregion
 
 			#region creating connections (after generators to make clicking in inout work)
-			if (script.guiDebug) Profiler.BeginSample("Creating Connections");
+			if (script.guiDebug) UnityEngine.Profiling.Profiler.BeginSample("Creating Connections");
 
 			int dragIdCounter = gens.list.Length+1;
 				foreach (Generator gen in gens.list)
@@ -436,11 +436,11 @@ namespace MapMagic
 					dragIdCounter++;
 				}
 
-			if (script.guiDebug) Profiler.EndSample();
+			if (script.guiDebug) UnityEngine.Profiling.Profiler.EndSample();
 			#endregion
 
 			#region Drawing generators
-			if (script.guiDebug) Profiler.BeginSample("Drawing Generators");
+			if (script.guiDebug) UnityEngine.Profiling.Profiler.BeginSample("Drawing Generators");
 
 				for(int i=0; i<gens.list.Length; i++)
 				{
@@ -468,9 +468,9 @@ namespace MapMagic
 					gen.layout.zoom =script.layout.zoom;
 
 					//drawing
-					if (script.guiDebug) Profiler.BeginSample("Generator GUI");
+					if (script.guiDebug) UnityEngine.Profiling.Profiler.BeginSample("Generator GUI");
 					gen.OnGUIBase();
-					if (script.guiDebug) Profiler.EndSample();
+					if (script.guiDebug) UnityEngine.Profiling.Profiler.EndSample();
 
 					//instant generate on params change
 					if (gen.layout.change) 
@@ -486,11 +486,11 @@ namespace MapMagic
 					gen.guiRect = gen.layout.field;
 				}
 
-			if (script.guiDebug) Profiler.EndSample();
+			if (script.guiDebug) UnityEngine.Profiling.Profiler.EndSample();
 			#endregion
 
 			#region Toolbar
-			if (script.guiDebug) Profiler.BeginSample("Toolbar");
+			if (script.guiDebug) UnityEngine.Profiling.Profiler.BeginSample("Toolbar");
 
 				if (script.toolbarLayout==null) script.toolbarLayout = new Layout();
 				script.toolbarLayout.margin = 0; script.toolbarLayout.rightMargin = 0;
@@ -538,11 +538,11 @@ namespace MapMagic
 				if (script.toolbarLayout.Button("", script.toolbarLayout.Inset(60,padding:0), icon:"MapMagic_Zoom", style:EditorStyles.toolbarButton))script.layout.zoom=1;
 				script.toolbarLayout.Label((int)(script.layout.zoom*100)+"%", new Rect(script.toolbarLayout.cursor.x-42, script.toolbarLayout.cursor.y+3, 42, script.toolbarLayout.cursor.height), fontSize:8);
 
-			if (script.guiDebug) Profiler.EndSample();
+			if (script.guiDebug) UnityEngine.Profiling.Profiler.EndSample();
 			#endregion
 
 			#region Draging
-			if (script.guiDebug) Profiler.BeginSample("Dragging");
+			if (script.guiDebug) UnityEngine.Profiling.Profiler.BeginSample("Dragging");
 
 				//dragging generators
 				for(int i=gens.list.Length-1; i>=0; i--)
@@ -609,7 +609,7 @@ namespace MapMagic
 					group.guiRect = group.layout.field;
 				}
 
-			if (script.guiDebug) Profiler.EndSample();
+			if (script.guiDebug) UnityEngine.Profiling.Profiler.EndSample();
 			#endregion
 
 			//right-click menus
@@ -626,7 +626,7 @@ namespace MapMagic
 
 			DrawDemoLock();
 	
-			if (script.guiDebug) Profiler.EndSample();
+			if (script.guiDebug) UnityEngine.Profiling.Profiler.EndSample();
 		}
 
 		public void DrawPopup ()

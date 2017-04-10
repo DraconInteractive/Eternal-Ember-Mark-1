@@ -351,7 +351,7 @@ namespace MapMagic
 			layout.fieldSize = 0.4f;              
 
 			//drawing window header
-			if (MapMagic.instance.guiDebug) Profiler.BeginSample("Header");
+			if (MapMagic.instance.guiDebug) UnityEngine.Profiling.Profiler.BeginSample("Header");
 			layout.Icon("MapMagic_Window_Header", new Rect(layout.field.x, layout.field.y, layout.field.width, 16));
 
 			//drawing eye icon
@@ -390,10 +390,10 @@ namespace MapMagic
 
 			layout.Par(1);
 			
-			if (MapMagic.instance.guiDebug) Profiler.EndSample();
+			if (MapMagic.instance.guiDebug) UnityEngine.Profiling.Profiler.EndSample();
 
 			//gen params
-			if (MapMagic.instance.guiDebug) Profiler.BeginSample("Gen Params");
+			if (MapMagic.instance.guiDebug) UnityEngine.Profiling.Profiler.BeginSample("Gen Params");
 			layout.Par(3);
 			if (!MapMagic.instance.guiDebug)
 			{
@@ -403,7 +403,7 @@ namespace MapMagic
 			}
 			else OnGUI();
 			layout.Par(3);
-			if (MapMagic.instance.guiDebug) Profiler.EndSample();
+			if (MapMagic.instance.guiDebug) UnityEngine.Profiling.Profiler.EndSample();
 
 			//drawing debug generate time
 			if (MapMagic.instance.guiDebug)
