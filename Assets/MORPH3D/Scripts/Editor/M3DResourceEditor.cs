@@ -26,7 +26,7 @@ public class M3DResourceEditor : Editor {
         try
         {
             M3DResource m3dresource = new M3DResource();
-            m3dresource.Read(wrapper.fileName);
+			m3dresource.Read(wrapper.fileName, false);
             EditorGUILayout.BeginHorizontal();
                 GUILayout.Label("" + m3dresource.header.Keys.Length + " entries");
             EditorGUILayout.EndHorizontal();
@@ -47,7 +47,7 @@ public class M3DResourceEditor : Editor {
                 {
                     string outputFile = m3dresource.header.DirectoryPath + "/" + m3dresource.header.Keys[i];
                     UnityEngine.Debug.Log("Exporting to: " + outputFile);
-                    m3dresource.UnpackResource(m3dresource.header.Keys[i]);
+					m3dresource.UnpackResource(m3dresource.header.Keys[i], null);
                     AssetDatabase.Refresh();
                 }
                 EditorGUILayout.EndHorizontal();

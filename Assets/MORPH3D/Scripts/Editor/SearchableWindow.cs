@@ -54,7 +54,6 @@ public class SearchableWindow : EditorWindow
 			EditorGUILayout.LabelField(display);
 			if(GUILayout.Button("Select", GUILayout.Width(75)))
 			{
-                UnityEngine.Debug.Log("Selected: " + option);
 				action(option);
 				windowInstance.Close();
 			}

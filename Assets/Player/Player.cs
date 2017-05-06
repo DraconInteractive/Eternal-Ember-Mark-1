@@ -5,6 +5,9 @@ using UnityEngine;
 public class Player : MonoBehaviour {
 
 	public static Player player;
+
+	[HideInInspector]
+	public Player_SpellControl p_SpellControl;
 	[HideInInspector]
 	public Player_Movement p_Movement;
 	Player_UI p_UI;
@@ -39,6 +42,8 @@ public class Player : MonoBehaviour {
 	public bool blocking;
 
 	public bool possessed;
+
+	int sOneIndex;
 	void Awake () {
 		player = GetComponent<Player> ();
 
@@ -47,16 +52,22 @@ public class Player : MonoBehaviour {
 	}
 
 	void Start () {
+		DontDestroyOnLoad (transform.parent.gameObject);
+
 		p_UI = Player_UI.p_UI;
 		pc_controller = PossessionController.pc_controller;
 		SetInCombat (false);
 		p_Movement = Player_Movement.p_movement;
 		currentHealth = maxHealth;
 		p_UI.UpdateHealthSlider (currentHealth, maxHealth);
+		p_SpellControl = Player_SpellControl.spellControl;
+		pc_controller = PossessionController.pc_controller;
 	}
 	// Use this for initialization
 	void Update () {
 		P_Input ();
+
+
 	}
 
 	void P_Input () {
@@ -64,11 +75,42 @@ public class Player : MonoBehaviour {
 			return;
 		}
 
+		#region attackinput
 		if (Input.GetMouseButtonDown(0)) {
 			if (attackRoutine == null) {
-				attackRoutine = StartCoroutine (Attack ());
+				attackRoutine = StartCoroutine (Attack (0, 0));
 			}
 		}
+
+		if (Input.GetKeyDown(KeyCode.Alpha1)) {
+			if (attackRoutine == null) {
+				attackRoutine = StartCoroutine (Attack (p_SpellControl.spellOne, 1));
+			}
+		}
+
+		if (Input.GetKeyDown(KeyCode.Alpha2)) {
+			if (attackRoutine == null) {
+				attackRoutine = StartCoroutine (Attack (p_SpellControl.spellTwo, 2));
+			}
+		}
+
+		if (Input.GetKeyDown(KeyCode.Alpha3)) {
+			if (attackRoutine == null) {
+				attackRoutine = StartCoroutine (Attack (p_SpellControl.spellThree, 3));
+			}
+		}
+
+		if (Input.GetKeyDown(KeyCode.Alpha4)) {
+			if (attackRoutine == null) {
+				attackRoutine = StartCoroutine (Attack (p_SpellControl.spellFour, 4));
+			}
+		}
+		#endregion
+//		if (Input.GetKeyDown(KeyCode.Alpha5)) {
+//			if (attackRoutine == null) {
+//				attackRoutine = StartCoroutine (Attack (5));
+//			}
+//		}
 
 		if (Input.GetMouseButtonDown(1)) {
 			blocking = true;
@@ -91,26 +133,110 @@ public class Player : MonoBehaviour {
 				InitPickUpItem ();
 			}
 		}
+
+		if (Input.GetKeyDown(KeyCode.F)) {
+
+			Ray ray = new Ray (transform.position + transform.up, transform.forward);
+			RaycastHit[] hits = Physics.RaycastAll (ray, 5);
+			foreach (RaycastHit hit in hits) {
+				NPC npc = hit.transform.gameObject.GetComponent<NPC> ();
+				if (npc != null) {
+					Interact (npc);
+					break;
+				}
+			}
+		}
 			
 	}
+
+	public void Interact (NPC npc) {
+		npc.Interact ();
+		anim.SetTrigger ("Interact");
+	}
+	#region combat
+	IEnumerator Attack (int attackType, int keyPrompt) { 
 		
-	IEnumerator Attack () {
+//		float timer = Time.realtimeSinceStartup;
+
 		if (!inCombat) {
 			SetInCombat (true);
 		}
+
 		if (playerWeapon != null) {
 			playerDamage = playerWeapon.thisItem.itemPower;
 		} else {
-			playerDamage = playerUnarmedDamage;
-		}
-		Collider[] c = Physics.OverlapCapsule (transform.position + transform.forward, transform.position + transform.forward + transform.up * 1.5f, 1);
-		anim.SetTrigger ("Attack");
-		yield return new WaitForSeconds (0.25f);
-		for (int i = 0; i < c.Length; i++) {
-			if (c[i].tag == "Enemy") {
-				c [i].gameObject.GetComponent<Health> ().Damage (playerDamage);
+			if (attackType == 0) {
+				playerDamage = playerUnarmedDamage;
+			} else if (attackType == 1) {
+				playerDamage = 0;
 			}
+
 		}
+		p_Movement.canMove = false;
+
+		if (attackType == 0) {
+			Collider[] c = Physics.OverlapCapsule (transform.position + transform.forward, transform.position + transform.forward + transform.up * 1.5f, 1);
+			anim.SetTrigger ("Attack");
+			yield return new WaitForSeconds (0.25f);
+			for (int i = 0; i < c.Length; i++) {
+				if (c[i].tag == "Enemy") {
+					c [i].gameObject.GetComponent<Health> ().Damage (playerDamage);
+				}
+			}
+		} else if (attackType == 1) {
+			anim.SetInteger ("SpellIndex", 1);
+			anim.SetTrigger ("CastSpell");
+//			yield return new WaitForSeconds (0.25f);
+		} else if (attackType == 2) {
+			anim.SetInteger ("SpellIndex", 2);
+			anim.SetTrigger ("CastSpell");
+			yield return new WaitForSeconds (6.5f);
+		} else if (attackType == 3) {
+			anim.SetInteger ("SpellIndex", 3);
+			anim.SetTrigger ("CastSpell");
+			yield return new WaitForSeconds (4.5f);
+		} else if (attackType == 4) {
+			anim.SetInteger ("SpellIndex", 4);
+			anim.SetTrigger ("CastSpell");
+			yield return new WaitForSeconds (2.5f);
+		} else if (attackType == 5) {
+			p_SpellControl.sFive_k_prompt = keyPrompt;
+			anim.SetInteger ("SpellIndex", 5);
+			anim.SetTrigger ("CastSpell");
+			bool endSpell = false;
+			while (endSpell == false) {
+				switch (keyPrompt) {
+				case 1:
+					if (Input.GetKeyUp(KeyCode.Alpha1)) {
+						endSpell = true;
+					}
+					break;
+				case 2:
+					if (Input.GetKeyUp(KeyCode.Alpha2)) {
+						endSpell = true;
+					}
+					break;
+				case 3:
+					if (Input.GetKeyUp(KeyCode.Alpha3)) {
+						endSpell = true;
+					}
+					break;
+				case 4:
+					if (Input.GetKeyUp(KeyCode.Alpha4)) {
+						endSpell = true;
+					}
+					break;
+				}
+				yield return null;
+			}
+			anim.SetTrigger ("EndSpell");
+
+			yield return new WaitForSeconds (1);
+			p_SpellControl.DeactivateEffect (5);
+		}
+		p_Movement.canMove = true;
+//		float updatedTimer = timer - Time.realtimeSinceStartup;
+//		print ("Attack Done");
 
 		attackRoutine = null;
 		yield break;
@@ -141,7 +267,9 @@ public class Player : MonoBehaviour {
 
 
 	}
-		
+	#endregion
+
+	#region pickup
 	void InitPickUpItem () {
 		Collider[] c = Physics.OverlapCapsule (transform.position + transform.forward, transform.position + transform.forward + transform.up, 1);
 
@@ -164,7 +292,9 @@ public class Player : MonoBehaviour {
 		p_Movement.canMove = true;
 		yield break;
 	}
+	#endregion
 
+	#region helperFunctions
 	public void ToggleCursor (bool state) {
 		Cursor.visible = state;
 		if (state) {
@@ -173,7 +303,7 @@ public class Player : MonoBehaviour {
 			Cursor.lockState = CursorLockMode.Locked;
 		}
 	}
-		
+	#endregion
 }
 
 

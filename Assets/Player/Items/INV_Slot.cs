@@ -111,7 +111,7 @@ public class INV_Slot : MonoBehaviour {
 
 	public virtual void ItemDrop (Item i) {
 		if (!p_inv.InventoryCheck(i)) {
-			int slotQuantity = i.slot.GetComponent<INV_Slot> ().itemQuantity;
+//			int slotQuantity = i.slot.GetComponent<INV_Slot> ().itemQuantity;
 			i.slot.GetComponent<INV_Slot> ().EmptyItemSlot ();
 			p_inv.AddItemToInventory (i, itemQuantity);
 		} 

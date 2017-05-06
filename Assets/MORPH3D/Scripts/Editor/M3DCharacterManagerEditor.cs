@@ -2,8 +2,10 @@ using UnityEditor;
 using UnityEngine;
 using System.Collections.Generic;
 using MORPH3D.COSTUMING;
+using MORPH3D.CONSTANTS;
 using MORPH3D;
 using System;
+using MORPH3D.FOUNDATIONS;
 
 namespace MORPH3D.EDITORS
 {
@@ -27,7 +29,6 @@ namespace MORPH3D.EDITORS
 		protected M3DCharacterManager charMan = null;
 
         protected bool showMorphs = false; //internally used for the twirl down of "Morphs" in the inspector panel
-
 		protected bool showContentPacks = false;
 
 		protected bool showAllClothing = false;
@@ -45,6 +46,7 @@ namespace MORPH3D.EDITORS
 		protected string selectedNewAttachmentPointName = "";
 
 		protected bool showHair = false;
+        protected bool showAdvanced = false;
 
         public override void OnInspectorGUI()
 		{
@@ -83,6 +85,9 @@ namespace MORPH3D.EDITORS
             showMorphs = EditorGUILayout.Foldout(showMorphs, "Morphs");
             if (showMorphs)
             {
+                //SerializedObject so = new SerializedObject(charMan.coreMorphs);
+                //so.Update();
+
                 charMan.coreMorphs.SortIfNeeded();
                 EditorGUI.indentLevel++;
 
@@ -125,20 +130,27 @@ namespace MORPH3D.EDITORS
 
                 if (dirtyMorphDettachments.Count > 0 || dirtyMorphAttachments.Count > 0 || dirtyMorphValues.Count > 0)
                 {
+
+				    Undo.RecordObject(charMan.coreMorphs, "Change Morph");
                     charMan.coreMorphs.DettachMorphs(dirtyMorphDettachments.ToArray());
-                    charMan.coreMorphs.AttachMorphs(dirtyMorphAttachments.ToArray());
-                    charMan.coreMorphs.SyncMorphValues(dirtyMorphValues.ToArray());
+					charMan.coreMorphs.AttachMorphs(dirtyMorphAttachments.ToArray(), false, false, null);
+                    charMan.coreMorphs.SyncMorphValues(dirtyMorphValues.ToArray(), null);
                     charMan.SyncAllBlendShapes();
+
+                    //so.ApplyModifiedProperties();
+                    EditorUtility.SetDirty(charMan.coreMorphs);
                 }
 
                 EditorGUILayout.Space();
                 EditorGUI.indentLevel--;
+
             }
             #endregion
 
             #region Morph Groups
 
-            var morphTypeGroup = FOUNDATIONS.MorphTypeGroupService.GetMorphTypeGroups(charMan.gameObject.name);
+            var body = charMan.gameObject.GetComponentInChildren<CIbody>();
+            var morphTypeGroup = MorphGroupService.GetMorphGroups(body.dazName);
             if (morphTypeGroup != null)
             {
                 showMorphTypeGroups = EditorGUILayout.Foldout(showMorphTypeGroups, "Morph Groups");
@@ -204,7 +216,7 @@ namespace MORPH3D.EDITORS
                             tempPack = prefabObj;
                         }
                     }
-					ContentPack packScript = new ContentPack(tempPack);
+					ContentPack packScript = new ContentPack(tempPack,false);
 					Undo.RecordObject(charMan, "Add Bundle");
 					charMan.AddContentPack(packScript);
 					EditorUtility.SetDirty(charMan);
@@ -240,7 +252,7 @@ namespace MORPH3D.EDITORS
                             CostumeItem ci = go.GetComponent<CostumeItem>();
                             if (ci != null)
                             {
-                                ContentPack packScript = new ContentPack(go);
+								ContentPack packScript = new ContentPack(go, false);
                                 Undo.RecordObject(charMan, "Add Bundle");
                                 charMan.AddContentPack(packScript);
                                 EditorUtility.SetDirty(charMan);
@@ -394,15 +406,13 @@ namespace MORPH3D.EDITORS
                                         id = newName.Substring(pos + 1);
                                     }
 
-                                    UnityEngine.Debug.Log("ID: " + id);
-
                                     selectedPropsNames[num] = id;
                                 }, propsNames);
 							}
 							if(selectedPropsNames[i] != "" && selectedPropsNames[i] != null && GUILayout.Button("Add"))
 							{
 								Undo.RecordObject(charMan, "Attach Prop");
-                                UnityEngine.Debug.Log("Prop:" + selectedPropsNames[i]);
+                                //UnityEngine.Debug.Log("Prop:" + selectedPropsNames[i]);
 								charMan.AttachPropToAttachmentPoint(selectedPropsNames[i], attachmentPoints[i].attachmentPointName);
 								EditorUtility.SetDirty(charMan);
 								selectedPropsNames[i] = "";
@@ -449,7 +459,7 @@ namespace MORPH3D.EDITORS
 				if(selectedNewAttachmentPointName != "" && selectedNewAttachmentPointName != null && tempBone != null && GUILayout.Button("Add"))
 				{
 					Undo.RecordObject(tempBone.gameObject, "New Attachment Point");
-					charMan.CreateAttachmentPointOnBone(selectedNewAttachmentPointName);
+					charMan.CreateAttachmentPointOnBone(selectedNewAttachmentPointName, null);
 					selectedNewAttachmentPointName = "";
 				}
 				GUILayout.FlexibleSpace();
@@ -490,12 +500,66 @@ namespace MORPH3D.EDITORS
 				EditorGUI.indentLevel--;
 			}
 			EditorGUILayout.Space();
-			#endregion props
-		}
+            #endregion props
+
+            #region advanced
+
+
+            showAdvanced = EditorGUILayout.Foldout(showAdvanced, "Advanced");
+            if (showAdvanced)
+            {
+			    EditorGUILayout.BeginHorizontal();
+                EditorGUILayout.LabelField("Recalculate Bounds Frequency");
+                EditorGUILayout.EndHorizontal();
+
+			    EditorGUILayout.BeginHorizontal();
+                List<BoundsOptionsIndex> boundsOptions = new List<BoundsOptionsIndex>();
+				boundsOptions.Add(new BoundsOptionsIndex(0, COSTUME_BOUNDS_UPDATE_FREQUENCY.NEVER, null));
+				boundsOptions.Add(new BoundsOptionsIndex(1, COSTUME_BOUNDS_UPDATE_FREQUENCY.ON_ATTACH, null));
+				boundsOptions.Add(new BoundsOptionsIndex(2, COSTUME_BOUNDS_UPDATE_FREQUENCY.ON_MORPH, null));
+
+                int currentSlot = 0;
+                string[] boundsOptionsText = new string[boundsOptions.Count];
+                for(int i = 0; i < boundsOptions.Count; i++)
+                {
+                    if(boundsOptions[i].frequency == charMan.CostumeBoundsUpdateFrequency)
+                    {
+                        currentSlot = i;
+                    }
+                    boundsOptionsText[i] = boundsOptions[i].display;
+
+                }
+
+				Undo.RecordObject(charMan, "Alter Bounds Frequency");
+                int boundsSlot = EditorGUILayout.Popup(currentSlot, boundsOptionsText);
+                charMan.CostumeBoundsUpdateFrequency = boundsOptions[boundsSlot].frequency;
+				EditorUtility.SetDirty(charMan);
+                EditorGUILayout.EndHorizontal();
+
+
+                //We're not quite ready to support this w/o having documentation about it
+                /*
+                if (charMan.alphaInjection != null)
+                {
+                    EditorGUILayout.BeginHorizontal();
+                    EditorGUILayout.LabelField("Alpha Injection");
+                    EditorGUILayout.EndHorizontal();
+                    if (GUILayout.Button("Force Current Mats into Buffer (use non-instanced mats)", m3dDefaultButtonStyle))
+                    {
+                        Undo.RecordObject(charMan.alphaInjection, "Force Update AI");
+                        charMan.alphaInjection.ForceCurrentMaterialsIntoOriginals();
+                        EditorUtility.SetDirty(charMan.alphaInjection);
+                    }
+                }
+                */
+            }
+
+            #endregion
+        }
 
         #region morphs_display
 
-        public void ShowMorphTypeGroup(FOUNDATIONS.MorphTypeGroup group)
+        public void ShowMorphTypeGroup(FOUNDATIONS.MorphGroup group)
         {
             group.IsOpenInEditor = EditorGUILayout.Foldout(group.IsOpenInEditor, group.Key);
             if (group.IsOpenInEditor)
@@ -523,8 +587,8 @@ namespace MORPH3D.EDITORS
             if (dirtyMorphDettachments.Count > 0 || dirtyMorphAttachments.Count > 0 || dirtyMorphValues.Count > 0)
             {
                 charMan.coreMorphs.DettachMorphs(dirtyMorphDettachments.ToArray());
-                charMan.coreMorphs.AttachMorphs(dirtyMorphAttachments.ToArray());
-                charMan.coreMorphs.SyncMorphValues(dirtyMorphValues.ToArray());
+				charMan.coreMorphs.AttachMorphs(dirtyMorphAttachments.ToArray(), false, false, null);
+				charMan.coreMorphs.SyncMorphValues(dirtyMorphValues.ToArray(), null);
                 charMan.SyncAllBlendShapes();
             }
         }
@@ -665,10 +729,10 @@ namespace MORPH3D.EDITORS
             EditorMorphState ems = new EditorMorphState();
             ems.dirty = false;
 
-            GUILayoutOption[] optionsLabel = new GUILayoutOption[] { GUILayout.MaxWidth(200.0f), GUILayout.MinWidth(25.0f) };
-            GUILayoutOption[] optionsSlider = new GUILayoutOption[] { GUILayout.MaxWidth(200.0f), GUILayout.MinWidth(50.0f) };
+            GUILayoutOption[] optionsLabel = new GUILayoutOption[] { GUILayout.MaxWidth(200.0f), GUILayout.MinWidth(25.0f), GUILayout.ExpandWidth(false) };
+            GUILayoutOption[] optionsSlider = new GUILayoutOption[] { GUILayout.ExpandWidth(true) };
             GUILayoutOption[] optionsKey = new GUILayoutOption[] { GUILayout.MaxWidth(200.0f), GUILayout.MinWidth(0.0f), GUILayout.Height(EditorGUIUtility.singleLineHeight) };
-            GUILayoutOption[] optionsToggle = new GUILayoutOption[] { GUILayout.Width(20f) };
+            GUILayoutOption[] optionsToggle = new GUILayoutOption[] { GUILayout.Width(40f),  GUILayout.ExpandWidth(false) };
 
             EditorGUILayout.BeginHorizontal();
             //Show the slider between 0% and 100% for the morph
@@ -755,6 +819,21 @@ namespace MORPH3D.EDITORS
 		}
         #endregion hair_display
 
+        protected struct BoundsOptionsIndex
+        {
+            public int index;
+            public COSTUME_BOUNDS_UPDATE_FREQUENCY frequency;
+            public string display;
+
+            public BoundsOptionsIndex(int index, COSTUME_BOUNDS_UPDATE_FREQUENCY frequency, string display)
+            {
+                this.index = index;
+                this.frequency = frequency;
+                this.display = display == null ? frequency.ToString() : display;
+            }
+        }
     }
+
+
 
 }

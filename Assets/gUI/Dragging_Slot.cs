@@ -19,7 +19,7 @@ public class Dragging_Slot : MonoBehaviour {
 		transform.position = Input.mousePosition;
 		if (Input.GetMouseButtonUp(0)) {
 			List<RaycastResult> hitList = new List<RaycastResult> ();
-			Ray camRay = Camera.main.ScreenPointToRay (Input.mousePosition);
+//			Ray camRay = Camera.main.ScreenPointToRay (Input.mousePosition);
 //			hits = Physics.RaycastAll (camRay);
 			var pointer = new PointerEventData (EventSystem.current);
 			pointer.position = Input.mousePosition;

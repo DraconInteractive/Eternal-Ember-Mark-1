@@ -11,6 +11,7 @@ public class ClickableUI : MonoBehaviour, IPointerClickHandler, IPointerDownHand
 	Spell_Icon s_i;
 	INV_Slot inv_s;
 	Item_Option_Panel i_o_p;
+
 	void Start () {
 		if (isInvSlot) {
 			inv_s = GetComponent<INV_Slot> ();
@@ -21,6 +22,8 @@ public class ClickableUI : MonoBehaviour, IPointerClickHandler, IPointerDownHand
 		if (isSpellIcon) {
 			s_i = GetComponent<Spell_Icon> ();
 		}
+
+
 	}
 	public void OnPointerClick(PointerEventData eventData) {
 		

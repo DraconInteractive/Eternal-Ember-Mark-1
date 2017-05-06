@@ -51,6 +51,9 @@ public class Player_Movement : MonoBehaviour {
 			rb.MovePosition (transform.position + (transform.forward * inputVelocity.z * 0.25f) + (transform.right * inputVelocity.x));
 		}
 
-		rb.MoveRotation (transform.rotation * Quaternion.Euler (new Vector3 (0, Input.GetAxis("Mouse X"), 0)));
+		float yawInput = Input.GetAxis ("Mouse X") + Input.GetAxis ("Horizontal");
+		yawInput = Mathf.Clamp (yawInput, -1, 1);
+
+		rb.MoveRotation (transform.rotation * Quaternion.Euler (new Vector3 (0, yawInput, 0)));
 	}
 }

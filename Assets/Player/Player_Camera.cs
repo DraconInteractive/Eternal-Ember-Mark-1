@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+//using DeepSky.Haze;
 
 public class Player_Camera : MonoBehaviour {
 
@@ -19,8 +20,20 @@ public class Player_Camera : MonoBehaviour {
 	public bool invActive, atTarget;
 
 	float focusZOffset;
+
+	public bool inControl = true;
+
+//	public DS_HazeView camHaze;
 	void Awake () {
 		p_camera = GetComponent<Player_Camera> ();
+
+//		camHaze = GetComponent<DS_HazeView> ();
+//		GameObject g = GameObject.Find ("DS_HazeController");
+//		if (g == null) {
+//			camHaze.enabled = false;
+//		} else {
+//			camHaze.enabled = true;
+//		}
 	}
 
 	// Use this for initialization
@@ -30,12 +43,18 @@ public class Player_Camera : MonoBehaviour {
 	}
 
 	void Update () {
-		focusZOffset += Input.GetAxis ("Mouse ScrollWheel") * 2;
-		focusZOffset = Mathf.Clamp (focusZOffset, -1, 1);
+		if (inControl) {
+			focusZOffset += Input.GetAxis ("Mouse ScrollWheel") * 2;
+			focusZOffset = Mathf.Clamp (focusZOffset, -1, 1);
+		}
+
 	}
 
 	// Update is called once per frame
 	void FixedUpdate () {
+		if (!inControl) {
+			return;
+		}
 		if (invActive) {
 //			CameraMovement (invOffset, headPoint.transform.position, 1.0f);
 		} else {
@@ -54,15 +73,14 @@ public class Player_Camera : MonoBehaviour {
 		
 	public void INVInitiator () {
 		StartCoroutine(MoveToINVPos(invOffset, headPoint.transform.position - player.transform.up * 0.5f, 0.01f));	
-
 	}
 
 	IEnumerator MoveToINVPos (Vector3 target, Vector3 lookTarget, float moveTime) {
 
 		Vector3 targetDir = Vector3.one;
 
-		float targetDist = 1;
-		float targetAngle = 2;
+//		float targetDist = 1;
+//		float targetAngle = 2;
 
 		float minTime = 0.02f;
 		while (minTime > 0) {
@@ -90,6 +108,24 @@ public class Player_Camera : MonoBehaviour {
 
 		atTarget = true;
 
+		yield break;
+	}
+
+	public IEnumerator BeginNPCInteraction (NPC npc) {
+		float f = 0;
+		while (transform.position != npc.camTarget.position) {
+			transform.position = Vector3.SmoothDamp (transform.position, npc.camTarget.position, ref cameraVelocity, 0.5f);
+			transform.LookAt (npc.headTarget.position);
+			f += Time.deltaTime;
+			if (f > 3) {
+				yield break;
+			}
+			yield return null;
+		}
+		yield break;
+	}
+
+	public IEnumerator EndNPCInteraction (NPC npc) {
 		yield break;
 	}
 }
