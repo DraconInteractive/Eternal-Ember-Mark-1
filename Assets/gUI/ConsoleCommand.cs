@@ -69,8 +69,8 @@ public class ConsoleCommand : MonoBehaviour {
 				LoadingScreen.ls.StartCoroutine (LoadingScreen.ls.LoadLevel ("Main Scene"));
 				break;
 			case "SetSpellOne":
-				p_UI.SpawnEventText ("Setting Spell_Socket_One to spell four");
-				Player_SpellControl.spellControl.SetSpell (1, 4);
+				p_UI.SpawnEventText ("Setting Spell_Socket_One to spell five");
+				Player_SpellControl.spellControl.SetSpell (1, 5);
 				break;
 			case "SetSpellTwo":
 				p_UI.SpawnEventText ("Setting Spell_Socket_Two to spell one");

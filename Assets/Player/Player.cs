@@ -8,6 +8,7 @@ public class Player : MonoBehaviour {
 
 	[HideInInspector]
 	public Player_SpellControl p_SpellControl;
+	Renderer[] playerFigureRenderers;
 	[HideInInspector]
 	public Player_Movement p_Movement;
 	Player_UI p_UI;
@@ -44,6 +45,10 @@ public class Player : MonoBehaviour {
 	public bool possessed;
 
 	int sOneIndex;
+
+	Coroutine stealthRoutine;
+
+	bool stealthed;
 	void Awake () {
 		player = GetComponent<Player> ();
 
@@ -62,12 +67,14 @@ public class Player : MonoBehaviour {
 		p_UI.UpdateHealthSlider (currentHealth, maxHealth);
 		p_SpellControl = Player_SpellControl.spellControl;
 		pc_controller = PossessionController.pc_controller;
+
+		playerFigureRenderers = p_SpellControl.gameObject.GetComponentsInChildren<Renderer> ();
+
+		stealthRoutine = StartCoroutine (ToggleStealth (false, 1));
 	}
 	// Use this for initialization
 	void Update () {
 		P_Input ();
-
-
 	}
 
 	void P_Input () {
@@ -147,12 +154,18 @@ public class Player : MonoBehaviour {
 			}
 		}
 			
+		if (Input.GetKeyDown(KeyCode.Space)) {
+			if (stealthRoutine == null) {
+				stealthRoutine = StartCoroutine (ToggleStealth (!stealthed, 1));
+			}
+		}
 	}
 
 	public void Interact (NPC npc) {
 		npc.Interact ();
 		anim.SetTrigger ("Interact");
 	}
+
 	#region combat
 	IEnumerator Attack (int attackType, int keyPrompt) { 
 		
@@ -180,7 +193,7 @@ public class Player : MonoBehaviour {
 			yield return new WaitForSeconds (0.25f);
 			for (int i = 0; i < c.Length; i++) {
 				if (c[i].tag == "Enemy") {
-					c [i].gameObject.GetComponent<Health> ().Damage (playerDamage);
+					c [i].gameObject.GetComponent<Health> ().Damage (playerDamage, this.gameObject);
 				}
 			}
 		} else if (attackType == 1) {
@@ -303,6 +316,33 @@ public class Player : MonoBehaviour {
 			Cursor.lockState = CursorLockMode.Locked;
 		}
 	}
+	#endregion
+
+	#region sneaking
+
+	IEnumerator ToggleStealth (bool state, float speedMult) {
+		if (state) {
+			for (float f = 0; f < 1; f += Time.deltaTime * speedMult) {
+				foreach (Renderer r in playerFigureRenderers) {
+					r.material.SetFloat ("_Cutoff", f);
+				}
+			}
+		} else {
+			for (float f = 1; f > 0; f -= Time.deltaTime * speedMult) {
+				foreach (Renderer r in playerFigureRenderers) {
+					r.material.SetFloat ("_Cutoff", f);
+				}
+			}
+		}
+
+		stealthed = state;
+
+		stealthRoutine = null;
+
+		yield break;
+
+	}
+
 	#endregion
 }
 

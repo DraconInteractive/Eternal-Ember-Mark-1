@@ -7,7 +7,7 @@ public class ConsumableItem : Item {
 	public enum consumableType {Food, Drink, Potion, Scroll};
 	public consumableType itemType;
 
-	public enum effectType {HealthRestore, HealthRegen, ManaRestore, ManaRegen, Poison};
+	public enum effectType {HealthRestore, HealthRegen, ManaRestore, ManaRegen, Poison, Fire};
 	public effectType itemEffect;
 
 	public float itemPower;
@@ -25,7 +25,10 @@ public class ConsumableItem : Item {
 		case effectType.ManaRegen:
 			break;
 		case effectType.Poison:
-			Player.player.gameObject.GetComponent<Health> ().ProcPoison (itemPower * Time.deltaTime, 2);
+			Player.player.gameObject.GetComponent<Health> ().ProcPoison (itemPower * Time.deltaTime, 2, Health.poisonType.Poison, null);
+			break;
+		case effectType.Fire:
+			Player.player.gameObject.GetComponent<Health> ().ProcPoison (itemPower * Time.deltaTime, 2, Health.poisonType.Fire, null);
 			break;
 		}
 
