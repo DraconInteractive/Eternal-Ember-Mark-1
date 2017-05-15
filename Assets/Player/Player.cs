@@ -156,7 +156,7 @@ public class Player : MonoBehaviour {
 			
 		if (Input.GetKeyDown(KeyCode.Space)) {
 			if (stealthRoutine == null) {
-				stealthRoutine = StartCoroutine (ToggleStealth (!stealthed, 1));
+//				stealthRoutine = StartCoroutine (ToggleStealth (!stealthed, 1));
 			}
 		}
 	}
