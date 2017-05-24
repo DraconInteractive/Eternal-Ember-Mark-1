@@ -10,6 +10,7 @@ public class ConsoleCommand : MonoBehaviour {
 	Player_UI p_UI;
 
 	public bool canCommand;
+	public Item swordItem;
 	// Use this for initialization
 	void Start () {
 		player = Player.player;
@@ -42,7 +43,7 @@ public class ConsoleCommand : MonoBehaviour {
 				break;
 			case "LDM":
 				canCommand = true;
-				p_UI.SpawnEventText ("You lazy bastard");
+				p_UI.SpawnEventText ("Logon Accepted. Welcome.");
 				break;
 			default:
 				p_UI.SpawnEventText ("Please log in to submit commands");
@@ -83,6 +84,9 @@ public class ConsoleCommand : MonoBehaviour {
 			case "SetSpellFour":
 				p_UI.SpawnEventText ("Setting Spell_Socket_Two to spell one");
 				Player_SpellControl.spellControl.SetSpell (4, 1);
+				break;
+			case "AddSwordToInventory":
+				Player_Inventory.p_inventory.AddItemToInventory (swordItem, 1);
 				break;
 			case "Logout":
 				canCommand = false;

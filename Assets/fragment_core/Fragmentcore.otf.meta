@@ -1,0 +1,21 @@
+fileFormatVersion: 2
+guid: cc61b78f03023c849bc6cebadb02281b
+timeCreated: 1493649315
+licenseType: Free
+TrueTypeFontImporter:
+  serializedVersion: 4
+  fontSize: 16
+  forceTextureCase: -2
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontName: Fragment Core
+  fontNames:
+  - Fragment Core
+  fallbackFontReferences: []
+  customCharacters: 
+  fontRenderingMode: 0
+  ascentCalculationMode: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

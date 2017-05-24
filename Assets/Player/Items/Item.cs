@@ -14,5 +14,7 @@ public class Item : ScriptableObject {
 //		itemSprite = i_sprite;
 //	}
 
+	public bool isInWeaponSlot;
+
 
 }

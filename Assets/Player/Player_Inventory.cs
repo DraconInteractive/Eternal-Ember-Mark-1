@@ -129,6 +129,14 @@ public class Player_Inventory : MonoBehaviour {
 			}
 		}
 
+//		if (weaponSlot.hasItem) {
+//			currentINVItems.Add (weaponSlot);
+//		}
+//
+//		if (armourSlot.hasItem) {
+//			currentINVItems.Add (armourSlot);
+//		}
+
 		for (int i = 0; i < currentINVItems.Count; i++) {
 			if (currentINVItems[i].slotItem == item) {
 				return true;
@@ -145,6 +153,16 @@ public class Player_Inventory : MonoBehaviour {
 	/// <param name="i">The index.</param>
 	public void AddItemToInventory (Item item, int quantity) {
 
+		//Check if it was in the weapon slot, if it was, destroy that weapon
+
+		if (item.isInWeaponSlot) {
+			if (player.playerWeapon != null) {
+				player.playerWeapon.UnEquip ();
+				weaponSlot.EmptyItemSlot ();
+				item.isInWeaponSlot = false;
+			}
+
+		}
 
 //		//Search for item. If found, add to quantity, then return.
 
@@ -163,6 +181,15 @@ public class Player_Inventory : MonoBehaviour {
 			return;
 		}
 
+//		bool itemInEQUSlot;
+
+//		if (item.slot != null) {
+//			print ("item has slot/w");
+//			if (item.slot == weaponSlot) {
+//				print ("item slot is /w");
+//				player.playerWeapon.UnEquip ();
+//			}
+//		}
 		//Otherwise, we now search for an empty slot
 		bool emptySlotFound = false;
 
@@ -174,6 +201,9 @@ public class Player_Inventory : MonoBehaviour {
 			}
 		}
 
+
+
+
 		if (emptySlotFound) {
 			p_UI.SpawnEventText (item.itemName + " added to inventory");
 			return;
@@ -181,13 +211,15 @@ public class Player_Inventory : MonoBehaviour {
 			p_UI.SpawnEventText ("Unable to add " + item.itemName + " to inventory");
 		}
 	}
-		
+
 	public void EquipItem (EquipmentItem item) {
 		switch (item.itemType)
 		{
 		case EquipmentItem.equipmentType.Weapon:
 			if (weaponSlot.hasItem) {
 				if (item.slot != null) {
+
+					player.playerWeapon.UnEquip ();
 					Item currentWeapon = weaponSlot.slotItem;
 					Item futureWeapon = item;
 
@@ -198,6 +230,8 @@ public class Player_Inventory : MonoBehaviour {
 					fwSlot.EmptyItemSlot ();
 					cwSlot.RecieveItem (futureWeapon, 1);
 					fwSlot.RecieveItem (currentWeapon, 1);
+
+
 				}
 			} else {
 				if (item.slot != null) {
@@ -205,12 +239,15 @@ public class Player_Inventory : MonoBehaviour {
 				} 
 				weaponSlot.RecieveItem (item, 1);
 			}
-			if (player.playerWeapon != null) {
-				player.playerWeapon.UnEquip ();
-			}
+//			if (player.playerWeapon != null) {
+//				print ("Has player weapon on disarm");
+//				player.playerWeapon.UnEquip ();
+//			}
 			GameObject newWeapon = Instantiate (item.itemPrefab) as GameObject;
 			Weapon w = newWeapon.GetComponent<Weapon> ();
 			w.Equip ();
+
+			item.isInWeaponSlot = true;
 			break;
 		case EquipmentItem.equipmentType.Offhand:
 			if (offhandSlot.hasItem) {

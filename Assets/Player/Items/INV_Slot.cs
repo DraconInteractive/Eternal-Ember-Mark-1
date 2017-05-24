@@ -55,9 +55,11 @@ public class INV_Slot : MonoBehaviour {
 
 		slotImage.sprite = defaultSprite;
 
-		slotItem.slot = null;
-		slotItem = null;
-
+		if (slotItem != null) {
+			slotItem.slot = null;
+			slotItem = null;
+		}
+			
 		SetNewItem (false);
 	}
 
@@ -104,6 +106,8 @@ public class INV_Slot : MonoBehaviour {
 			go.transform.localScale = Vector3.one;
 			go.GetComponent<Dragging_Slot> ().newImg = itemSprite;
 			go.GetComponent<Dragging_Slot> ().ds_item = slotItem;
+
+//			if ((this as EQU_Slot).)
 		} else {
 			print ("No item = no drag");
 		}
@@ -112,7 +116,8 @@ public class INV_Slot : MonoBehaviour {
 	public virtual void ItemDrop (Item i) {
 		if (!p_inv.InventoryCheck(i)) {
 //			int slotQuantity = i.slot.GetComponent<INV_Slot> ().itemQuantity;
-			i.slot.GetComponent<INV_Slot> ().EmptyItemSlot ();
+
+//			i.slot.GetComponent<INV_Slot> ().EmptyItemSlot ();
 			p_inv.AddItemToInventory (i, itemQuantity);
 		} 
 	}

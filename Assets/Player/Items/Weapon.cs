@@ -49,10 +49,13 @@ public class Weapon : Interactable{
 
 		Holster ();
 		player.playerWeapon = GetComponent<Weapon> ();
+		equipped = true;
 	}
 
 	public void UnEquip () {
+		equipped = false;
 		player.playerWeapon = null;
+		print ("Unequip: " + gameObject.name);
 		Destroy (this.gameObject);
 
 //		Item i = slotItem;
