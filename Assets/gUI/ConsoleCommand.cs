@@ -8,6 +8,7 @@ public class ConsoleCommand : MonoBehaviour {
 	public InputField commandConsole;
 	private Player player;
 	Player_UI p_UI;
+	JSONTest jt;
 
 	public bool canCommand;
 	public Item swordItem;
@@ -15,6 +16,7 @@ public class ConsoleCommand : MonoBehaviour {
 	void Start () {
 		player = Player.player;
 		p_UI = Player_UI.p_UI;
+		jt = JSONTest.jt;
 		canCommand = false;
 		ToggleCC (false);
 	}
@@ -87,6 +89,14 @@ public class ConsoleCommand : MonoBehaviour {
 				break;
 			case "AddSwordToInventory":
 				Player_Inventory.p_inventory.AddItemToInventory (swordItem, 1);
+				break;
+			case "Test1":
+				jt.Seriali();
+				p_UI.SpawnEventText ("JS1");
+				break;
+			case "Test2":
+				jt.DeSeriali();
+				p_UI.SpawnEventText ("JS2");
 				break;
 			case "Logout":
 				canCommand = false;
