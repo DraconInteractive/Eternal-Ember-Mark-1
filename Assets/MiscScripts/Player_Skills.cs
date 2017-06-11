@@ -8,6 +8,7 @@ public class Player_Skills : MonoBehaviour {
 	public static Player_Skills p_skills;
 	Player player;
 	Player_Movement p_movement;
+	Player_UI p_ui;
 	PossessionController pc_controller;
 	Player_Progression p_prog;
 	public GameObject skillPanel;
@@ -35,6 +36,7 @@ public class Player_Skills : MonoBehaviour {
 	void Start () {
 		player = Player.player;
 		p_movement = Player_Movement.p_movement;
+		p_ui = Player_UI.p_UI;
 		pc_controller = PossessionController.pc_controller;
 		p_prog = Player_Progression.p_prog;
 		ToggleSkills (false);
@@ -45,7 +47,7 @@ public class Player_Skills : MonoBehaviour {
 	void Update () {
 		if (Input.GetKeyDown(KeyCode.K)) {
 			if (p_movement.canMove) {
-				ToggleSkills (!skillsOpen);
+				ToggleSkills (!p_ui.skillP);
 			} else {
 				ToggleSkills (false);
 			}
@@ -58,24 +60,26 @@ public class Player_Skills : MonoBehaviour {
 			return;
 		}
 
-		skillPanel.SetActive (state);
-		player.ToggleCursor (state);
+//		skillPanel.SetActive (state);
+//		player.ToggleCursor (state);
+
+		p_ui.SetElement (Player_UI.UI_Element.Skill, state);
 		skillsOpen = state;
 
 		if (state) {
-			player.ToggleCursor (true);
-			p_movement.canMove = false;
+//			player.ToggleCursor (true);
+//			p_movement.canMove = false;
 			SetOpenTab (null);
 			bool foundDragon = p_prog.progression ["foundDragon"];
 			bool communedWithDragon;
 //			p_prog.progression.TryGetValue ("foundDragon", out foundDragon);
 			fireTab.interactable = foundDragon;
-			print ("fd: " + foundDragon);
+//			print ("fd: " + foundDragon);
 			p_prog.progression.TryGetValue ("communedWithDragon", out communedWithDragon);
 			masteryTab.interactable = communedWithDragon;
 		} else {
-			player.ToggleCursor (false);
-			p_movement.canMove = false;
+//			player.ToggleCursor (false);
+//			p_movement.canMove = false;
 		}
 	}
 

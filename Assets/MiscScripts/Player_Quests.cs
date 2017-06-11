@@ -5,6 +5,7 @@ using UnityEngine.UI;
 
 public class Player_Quests : MonoBehaviour {
 	public static Player_Quests p_quests;
+	Player_UI p_ui;
 	public GameObject questPanel, questScrollContentPanel, questPrefab;
 	public List<GameObject> qs_content = new List<GameObject>();
 	public List<Quest> quest_onPanel = new List<Quest> ();
@@ -17,6 +18,7 @@ public class Player_Quests : MonoBehaviour {
 	}
 
 	void Start () {
+		p_ui = Player_UI.p_UI;
 		ToggleQuestPanel (false);
 	}
 	
@@ -32,11 +34,13 @@ public class Player_Quests : MonoBehaviour {
 
 	public void ToggleQuestPanel (bool state) {
 
-		Player.player.ToggleCursor (!questPanel.activeSelf);
+//		Player.player.ToggleCursor (!questPanel.activeSelf);
 
-		if (questPanel.activeSelf != state) {
-			questPanel.SetActive (state);
-		}
+//		if (questPanel.activeSelf != state) {
+//			questPanel.SetActive (state);
+//		}
+
+		p_ui.SetElement (Player_UI.UI_Element.Quest, state);
 	}
 
 	public void AddQuestToPanel (Quest quest) {

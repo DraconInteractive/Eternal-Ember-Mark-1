@@ -11,7 +11,6 @@ public class ConsoleCommand : MonoBehaviour {
 	JSONTest jt;
 
 	public bool canCommand;
-	public Item swordItem;
 	// Use this for initialization
 	void Start () {
 		player = Player.player;
@@ -86,9 +85,6 @@ public class ConsoleCommand : MonoBehaviour {
 			case "SetSpellFour":
 				p_UI.SpawnEventText ("Setting Spell_Socket_Two to spell one");
 				Player_SpellControl.spellControl.SetSpell (4, 1);
-				break;
-			case "AddSwordToInventory":
-				Player_Inventory.p_inventory.AddItemToInventory (swordItem, 1);
 				break;
 			case "Test1":
 				jt.Seriali();

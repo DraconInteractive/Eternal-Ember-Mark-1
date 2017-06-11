@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class Weapon : Interactable{
 	Player player;
-	Player_Inventory p_inv;
 	public Vector3 handPosOffset, handRotOffset;
 
 	GameObject hand, holster;
@@ -13,18 +12,14 @@ public class Weapon : Interactable{
 
 	public bool attacking;
 
-	public EquipmentItem thisItem;
-
 	public enum weaponType {MH_SWORD, MH_DAGGER, OH_DAGGER};
 	public weaponType w_type;
 
 	void Start () {
 		player = Player.player;
-		p_inv = Player_Inventory.p_inventory;
 	}		
 
 	public override void Interact () {
-		p_inv.AddItemToInventory (thisItem, 1);
 		Destroy (this.gameObject);
 	}
 

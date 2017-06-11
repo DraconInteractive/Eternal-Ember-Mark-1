@@ -20,12 +20,13 @@ public class Enemy : MonoBehaviour {
 //	Vector3 aiVelocity;
 	float currentSpeed;
 
+	public float speedMod = 1;
+
 	public GameObject pickupTemplate;
-	public List<Item> possibleDrops;
 
 	public bool dead;
 
-	bool searchForPlayer;
+	bool searchForPlayer, stunned;
 
 	// Use this for initialization
 	void Start () {
@@ -34,7 +35,7 @@ public class Enemy : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		if (!dead) {
+		if (!dead && !stunned) {
 			EnemyUpdate ();
 		}
 
@@ -134,8 +135,36 @@ public class Enemy : MonoBehaviour {
 		}
 
 		currentSpeed = Mathf.Clamp01(currentSpeed);
+		currentSpeed *= speedMod;
 		anim.SetFloat ("Speed", currentSpeed);
 
+	}
+
+	public void ProcSlow (float duration) {
+		StartCoroutine (SlowEnemy (duration));
+	}
+
+	public void ProcStun (float duration) {
+		if (!stunned) {
+			StartCoroutine (StunEnemy (duration));
+		}
+
+	}
+
+	IEnumerator SlowEnemy (float duration) {
+		speedMod -= 0.5f;
+		speedMod = Mathf.Clamp (speedMod, 0, 1);
+		yield return new WaitForSeconds (duration);
+		speedMod += 0.5f;
+		speedMod = Mathf.Clamp (speedMod, 0, 1);
+		yield break;
+	}
+
+	IEnumerator StunEnemy (float duration) {
+		stunned = true;
+		yield return new WaitForSeconds (duration);
+		stunned = false;
+		yield break;
 	}
 
 	bool CheckPlayerDistance (Vector3 playerR, float distance) {
@@ -211,14 +240,7 @@ public class Enemy : MonoBehaviour {
 		rb.isKinematic = true;
 		GetComponent<Collider> ().enabled = false;
 		dead = true;
-		DropItem ();
 	}
 
-	public void DropItem () {
-		GameObject pickup = Instantiate (pickupTemplate, transform.position, Quaternion.identity) as GameObject;
-		PickUp p = pickup.GetComponent<PickUp> ();
-		int i = Random.Range (0, possibleDrops.Count);
-		p.pickupItem = possibleDrops [i];
-	}
 		
 }

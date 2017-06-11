@@ -8,47 +8,46 @@ public class Player : MonoBehaviour {
 
 	[HideInInspector]
 	public Player_SpellControl p_SpellControl;
+
 	Renderer[] playerFigureRenderers;
+
 	[HideInInspector]
 	public Player_Movement p_Movement;
+
 	Player_UI p_UI;
+
 	PossessionController pc_controller;
+
 	[HideInInspector]
 	public Rigidbody rb;
 
 	public float movementSpeed;
+
 	Vector3 playerVelocity;
+
 	[HideInInspector]
 	public Animator anim;
 
 	public GameObject leftHandAttach, rightHandAttach;
 	public Weapon playerWeapon;
-	public Shield playerShield;
-
 	public bool inCombat;
 	Coroutine attackRoutine;
-
 	public float currentHealth;
 	public float maxHealth;
-
 	public float playerDamage;
 	public float playerUnarmedDamage;
-
 	public GameObject playerCamera;
-
 	public GameObject yyParticle;
-
 	public int currentAttack;
-
 	public bool blocking;
-
 	public bool possessed;
-
 	int sOneIndex;
 
 	Coroutine stealthRoutine;
-
 	bool stealthed;
+
+	[HideInInspector]
+	public RuneControl rune_control;
 	void Awake () {
 		player = GetComponent<Player> ();
 
@@ -67,10 +66,12 @@ public class Player : MonoBehaviour {
 		p_UI.UpdateHealthSlider (currentHealth, maxHealth);
 		p_SpellControl = Player_SpellControl.spellControl;
 		pc_controller = PossessionController.pc_controller;
-
+	
 		playerFigureRenderers = p_SpellControl.gameObject.GetComponentsInChildren<Renderer> ();
 
-		stealthRoutine = StartCoroutine (ToggleStealth (false, 1));
+//		stealthRoutine = StartCoroutine (ToggleStealth (false, 1));
+
+		rune_control = RuneControl.rune_control;
 	}
 	// Use this for initialization
 	void Update () {
@@ -176,7 +177,7 @@ public class Player : MonoBehaviour {
 		}
 
 		if (playerWeapon != null) {
-			playerDamage = playerWeapon.thisItem.itemPower;
+//			playerDamage = playerWeapon.thisItem.itemPower;
 		} else {
 			if (attackType == 0) {
 				playerDamage = playerUnarmedDamage;
@@ -194,7 +195,10 @@ public class Player : MonoBehaviour {
 			for (int i = 0; i < c.Length; i++) {
 				if (c[i].tag == "Enemy") {
 					c [i].gameObject.GetComponent<Health> ().Damage (playerDamage, this.gameObject);
+//					rune_control.onPlayerAttack (c [i].gameObject);
+					rune_control.ActivateAttackRunes (c [i].gameObject);
 				}
+
 			}
 		} else if (attackType == 1) {
 			anim.SetInteger ("SpellIndex", 1);
@@ -266,14 +270,7 @@ public class Player : MonoBehaviour {
 			} else {
 				playerWeapon.Holster ();
 			}
-
-			if (playerShield != null) {
-				if (state) {
-					playerShield.UnHolster ();
-				} else {
-					playerShield.Holster ();
-				}
-			}
+				
 		} else {
 			anim.SetBool ("Armed", false);
 		}
